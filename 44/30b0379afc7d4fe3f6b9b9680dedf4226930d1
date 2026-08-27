@@ -1,0 +1,29 @@
+skills/write-pytest-cases/template/.gitignore
+  s_8abc870f5421e1::t_2675fb8e284163 1-3
+tests/test_http_client_logging.py
+  s_8abc870f5421e1::t_6a16cf863c696b 1-48
+skills/write-pytest-cases/template/conftest.py
+  s_8abc870f5421e1::t_2921a53c756f4c 50-63
+  s_8abc870f5421e1::t_6c4aad73b58414 1-2,4
+skills/write-pytest-cases/template/frame/__init__.py
+  s_8abc870f5421e1::t_ef929c1e344e74 1,7
+skills/write-pytest-cases/template/frame/http_client.py
+  s_8abc870f5421e1::t_573962c1ecad2a 3-4
+  s_8abc870f5421e1::t_1f230d28d075b6 26,29,33,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "4430b0379afc7d4fe3f6b9b9680dedf4226930d1",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
