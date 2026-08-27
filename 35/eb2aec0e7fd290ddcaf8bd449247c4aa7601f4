@@ -1,0 +1,23 @@
+skills/generate-api-tests/CONVENTIONS.md
+  s_8abc870f5421e1::t_c6b3380ed8738d 55-57
+  s_8abc870f5421e1::t_a2505153df4c46 25-34,36-37,40
+skills/generate-api-tests/SKILL.md
+  s_8abc870f5421e1::t_7bd953e0970e50 14-41
+  s_8abc870f5421e1::t_112e6dc91eee42 62-66,73-77,81-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "35eb2aec0e7fd290ddcaf8bd449247c4aa7601f4",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
