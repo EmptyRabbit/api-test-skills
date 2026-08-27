@@ -1,0 +1,23 @@
+tests/conftest.py
+  s_d0db2111cf547d::t_df2c7b8ae742c5 1-17
+skills/write-pytest-cases/template/frame/request_log.py
+  s_d0db2111cf547d::t_ac6fd8dde92843 1-111
+tests/test_request_log.py
+  s_d0db2111cf547d::t_2986b001bdde44 1-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "a470d718cb201d76e3c58ff04c45d970bbff511d",
+  "prompts": {},
+  "sessions": {
+    "s_d0db2111cf547d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "6774e910-912f-4126-aff4-79db380bc728",
+        "model": "composer-2.5-fast"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
