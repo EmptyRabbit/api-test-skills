@@ -1,0 +1,25 @@
+skills/run-and-fix-tests/SKILL.md
+  s_8abc870f5421e1::t_56e9b34ea2142f 17,20-26
+  s_8abc870f5421e1::t_545da807ed55fe 55-56
+  s_8abc870f5421e1::t_10fe07dc7125f0 42-50
+skills/run-and-fix-tests/TEMPLATE.md
+  s_8abc870f5421e1::t_4018cd84305237 35-37
+  s_8abc870f5421e1::t_a4a4a5296c2d9f 77-80
+  s_8abc870f5421e1::t_dbe82f99956457 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "b84c4b5514b07bf78f8ed8e84596306be37b770c",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
