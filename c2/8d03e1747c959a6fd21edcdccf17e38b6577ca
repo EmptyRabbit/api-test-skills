@@ -1,0 +1,20 @@
+skills/write-pytest-cases/template/frame/http_client.py
+  s_8abc870f5421e1::t_c1c3e931f41bba 40-44
+  s_8abc870f5421e1::t_a41cfbdd31c608 29-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "c28d03e1747c959a6fd21edcdccf17e38b6577ca",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
