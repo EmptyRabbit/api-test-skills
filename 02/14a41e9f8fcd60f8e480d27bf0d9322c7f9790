@@ -1,0 +1,21 @@
+skills/analyze-change-scenarios/TEMPLATES.md
+  s_8abc870f5421e1::t_fc822664b7fd32 83-94
+skills/analyze-change-scenarios/SKILL.md
+  s_8abc870f5421e1::t_b96a6c37b658d4 52-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "0214a41e9f8fcd60f8e480d27bf0d9322c7f9790",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
