@@ -1,0 +1,25 @@
+skills/prepare-mock-data/TEMPLATE.md
+  s_8abc870f5421e1::t_990178fc2c95fe 4,11
+skills/prepare-framework-data/SKILL.md
+  s_8abc870f5421e1::t_9cb17231708475 11-17
+skills/prepare-framework-data/TEMPLATE.md
+  s_8abc870f5421e1::t_4cd6e5cfc50f4e 4,11
+skills/prepare-mock-data/SKILL.md
+  s_8abc870f5421e1::t_9082ceebf2ad04 11-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "45d4903a9f4c09ea2addc3ac2c020adb4f51877d",
+  "prompts": {},
+  "sessions": {
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
