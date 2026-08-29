@@ -1,0 +1,22 @@
+skills/generate-api-tests/SKILL.md
+  s_b81253fbf1b266::t_4677ee847f271b 125-130
+  s_b81253fbf1b266::t_e7c99256e1e56a 59-66
+  s_b81253fbf1b266::t_8dfe60e9677ed3 90-92
+  s_b81253fbf1b266::t_fbd91ebe795f31 12-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "86110d8b4b409b2d56b537162d36b9734ec68776",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
