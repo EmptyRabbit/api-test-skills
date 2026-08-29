@@ -1,0 +1,29 @@
+skills/write-pytest-cases-ctrip/template-overlay/frame/mq_client.py
+  s_b81253fbf1b266::t_d45f49a21e01d5 2,6-11,17,19,22-23,37,44-50,52-55,57-58,71,80-81,83
+README.md
+  s_b81253fbf1b266::t_500d14de2a4194 22-28
+skills/write-pytest-cases-ctrip/template-overlay/frame/redis_client.py
+  s_b81253fbf1b266::t_e19bdf83e49cd1 13,21
+skills/generate-api-tests/SKILL.md
+  s_b81253fbf1b266::t_9c6247f2ed360c 145
+  s_b81253fbf1b266::t_5bfbf9d60b474c 10
+skills/write-pytest-cases-ctrip/SKILL.md
+  s_b81253fbf1b266::t_25d9751c684509 54
+  s_b81253fbf1b266::t_1caf590139aa65 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "505f52e673bd449b1f6eb14b4dbe31f118207786",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
