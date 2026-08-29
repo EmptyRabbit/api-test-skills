@@ -1,0 +1,32 @@
+skills/analyze-change-scenarios/SKILL.md
+  s_b81253fbf1b266::t_c7f0af429738c9 68
+  s_753acbdc5dce60::t_1dcf44bcaa6d61 52-67,69-80
+skills/generate-api-tests/CONVENTIONS.md
+  s_b81253fbf1b266::t_f43a8ac05b3117 11-14,16-18,20,22
+skills/analyze-change-scenarios/TEMPLATES.md
+  s_753acbdc5dce60::t_149d919dad8293 101-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "e55fc1426612b1c6fded0b09dfe6b5841a7783b0",
+  "prompts": {},
+  "sessions": {
+    "s_753acbdc5dce60": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3e9313c-9b86-4872-a05e-fb99b3717513",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": null
+    },
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
