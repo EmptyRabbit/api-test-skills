@@ -1,0 +1,25 @@
+skills/write-pytest-cases/template/frame/mq_client.py
+  s_b81253fbf1b266::t_0a7f617ededd8f 1-34
+skills/write-pytest-cases/template/conftest.py
+  s_b81253fbf1b266::t_743c5248f8c8bd 7,28,30,37
+skills/write-pytest-cases/template/frame/request_log.py
+  s_b81253fbf1b266::t_687ad9008a8d41 2
+skills/write-pytest-cases/template/tests/test_example.py
+  s_b81253fbf1b266::t_d953a74d17d088 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "46afda406a49955f3aa6723fa3f347760b208b05",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
