@@ -1,0 +1,43 @@
+skills/run-and-fix-tests/SKILL.md
+  s_b81253fbf1b266::t_8100d4013d5d87 18
+  s_b81253fbf1b266::t_3fac7317d8cd45 35
+  s_b81253fbf1b266::t_f14e2e58bb779c 39
+  s_b81253fbf1b266::t_95a4c33b54c942 46
+skills/analyze-change-scenarios/SKILL.md
+  s_b81253fbf1b266::t_51fb4a600795f3 44
+  s_b81253fbf1b266::t_90f6903254403b 31-32
+  s_b81253fbf1b266::t_efae11a6dc9c2a 28
+  s_b81253fbf1b266::t_023b0acaeab85d 34-35,37
+  s_b81253fbf1b266::t_d6bbcffb0c60fc 64
+skills/run-and-fix-tests/TEMPLATE.md
+  s_b81253fbf1b266::t_18196ab8925f76 23
+skills/generate-api-tests/CONVENTIONS.md
+  s_b81253fbf1b266::t_eed6cc17871476 10
+  s_b81253fbf1b266::t_f5e1a8ed3aadc6 18-19
+  s_b81253fbf1b266::t_738508579ee0a9 72-74,76-80
+  s_b81253fbf1b266::t_fbe446424fbac3 15
+skills/analyze-change-scenarios/TEMPLATES.md
+  s_b81253fbf1b266::t_61639f35d36f18 16-17
+  s_b81253fbf1b266::t_1678d28a0aab48 56
+  s_b81253fbf1b266::t_f7787408e047b1 53
+  s_b81253fbf1b266::t_ff1a9f0c114eb9 52
+skills/write-pytest-cases/template/tests/test_example.py
+  s_b81253fbf1b266::t_a8b4c0be31a872 132
+  s_b81253fbf1b266::t_5757681db35a40 81,92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "78134f0ec5cc86d17e4a7358f46e8f6faa9e83b1",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
