@@ -1,0 +1,25 @@
+tests/test_mq_client_core.py
+  s_b81253fbf1b266::t_8572d7ca2854d0 1-52
+tests/test_mq_client_ctrip.py
+  s_b81253fbf1b266::t_0a91b271613a34 3-7,9,16,21-22,26-38,41-43,45,53-56,58-63,87
+  s_b81253fbf1b266::t_dca08702c5be88 1-2,8,10-15,17-20,23-25,39-40,44,46-52,57,64-86,88-130
+skills/write-pytest-cases/template/frame/redis_client.py
+  s_b81253fbf1b266::t_26dee68fdd90cc 5-10,36,45
+  s_b81253fbf1b266::t_0153e6ef3c8586 102-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "f3bd56feae78611f368a8dac1539616ad38babeb",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
