@@ -1,0 +1,19 @@
+TODO.md
+  s_b81253fbf1b266::t_dd926ff0c5b38a 1-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "4473715d866b811a768008e20469118247214bc8",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
