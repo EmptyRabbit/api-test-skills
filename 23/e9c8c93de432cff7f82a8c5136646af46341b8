@@ -1,0 +1,126 @@
+skills/write-pytest-cases/template/requirements.txt
+  s_b81253fbf1b266::t_64fa73b67010ec 6
+skills/write-pytest-cases/template/conftest.py
+  s_b81253fbf1b266::t_743c5248f8c8bd 7,28,30,37
+skills/run-and-fix-tests/TEMPLATE.md
+  s_b81253fbf1b266::t_18196ab8925f76 23
+skills/prepare-framework-data/TEMPLATE.md
+  s_b81253fbf1b266::t_9b64762cefc540 52
+  s_b81253fbf1b266::t_867ff22d1dbeec 62-63
+  s_b81253fbf1b266::t_2955be6bb25ee2 50
+  s_b81253fbf1b266::t_1fe42024fb7e19 15
+  s_b81253fbf1b266::t_71c5b60a1cfd02 58
+  s_b81253fbf1b266::t_b0ff8f7ba2d11d 68
+skills/write-pytest-cases/STYLE.md
+  s_b81253fbf1b266::t_90cb5531f53280 343
+  s_b81253fbf1b266::t_b40cb445a5ee96 34-35
+  s_b81253fbf1b266::t_46a60f97af93fa 160,165
+  s_b81253fbf1b266::t_a76e0f3c618a33 194,196,199
+  s_b81253fbf1b266::t_a32f48e8059c9d 41,48,50,54
+  s_b81253fbf1b266::t_6a95f341e6f6b5 109,113
+  s_b81253fbf1b266::t_ec90b2644958bb 285,293
+  s_b81253fbf1b266::t_3c3906811f5b83 65,73
+  s_b81253fbf1b266::t_f43b0e4b89af02 258,266,268,272
+  s_b81253fbf1b266::t_eb6b3194a1855d 227,235,239,247
+  s_b81253fbf1b266::t_f76732bb97f4f4 320,328
+skills/analyze-change-scenarios/TEMPLATES.md
+  s_b81253fbf1b266::t_ff1a9f0c114eb9 52
+  s_b81253fbf1b266::t_61639f35d36f18 16-17
+  s_b81253fbf1b266::t_f7787408e047b1 53
+  s_b81253fbf1b266::t_1678d28a0aab48 56
+  s_753acbdc5dce60::t_149d919dad8293 101-104
+skills/generate-api-tests/CONVENTIONS.md
+  s_b81253fbf1b266::t_fbe446424fbac3 19
+  s_b81253fbf1b266::t_738508579ee0a9 76-78,80-84
+  s_b81253fbf1b266::t_f43a8ac05b3117 11-14,16-18,20,22
+  s_b81253fbf1b266::t_f5e1a8ed3aadc6 23
+  s_b81253fbf1b266::t_eed6cc17871476 10
+skills/write-pytest-cases/template/config.yaml
+  s_b81253fbf1b266::t_f825259ebe9900 1,4,7,11-17
+skills/write-pytest-cases/TEMPLATE.md
+  s_b81253fbf1b266::t_1cff6ed9d29620 55
+  s_b81253fbf1b266::t_7cf8aeb28bad24 60
+  s_b81253fbf1b266::t_c47e455d4903d4 72
+README.md
+  s_b81253fbf1b266::t_500d14de2a4194 22-27
+  s_b81253fbf1b266::t_b1ab7ff695c84c 10-11,13-15,28,32,43,75-78
+  s_b81253fbf1b266::t_6710371125a03c 8-9,12,16-19,41,45-47,49,51,53,55,57-60,62-63,71,73,80,82-83
+  s_b81253fbf1b266::t_1e635003688cd1 85,87-88,90-96,98-102,104-105,107,110-112,115
+TODO.md
+  s_b81253fbf1b266::t_dd926ff0c5b38a 1-45
+  s_b81253fbf1b266::t_9e65e2ad5dec79 46-60
+skills/write-pytest-cases/template/frame/config.py
+  s_b81253fbf1b266::t_b23c800228f0cb 29-50
+skills/write-pytest-cases/template/frame/redis_client.py
+  s_b81253fbf1b266::t_cbc9fa971f8c62 1-4,11-18,22-24,33-34,37-44,46,52,55-60,68-73,78-84,95,101,109,112,121
+  s_b81253fbf1b266::t_26dee68fdd90cc 5-10,45
+  s_b81253fbf1b266::t_0153e6ef3c8586 102-107
+skills/write-pytest-cases/template/frame/__init__.py
+  s_b81253fbf1b266::t_98de81d13b3814 4-5,7
+skills/write-pytest-cases/template/tests/test_example.py
+  s_b81253fbf1b266::t_63ee92d8e8526a 75
+  s_b81253fbf1b266::t_d953a74d17d088 3-4
+  s_b81253fbf1b266::t_5757681db35a40 81,92
+  s_b81253fbf1b266::t_a8b4c0be31a872 132
+tests/test_mq_client_core.py
+  s_b81253fbf1b266::t_8572d7ca2854d0 1-52
+skills/prepare-framework-data/SKILL.md
+  s_b81253fbf1b266::t_e65d63d9666da0 3,21-27,40-41,49,54,56,59,61,63-65,70
+skills/write-pytest-cases/template/frame/request_log.py
+  s_b81253fbf1b266::t_687ad9008a8d41 2
+skills/analyze-change-scenarios/SKILL.md
+  s_b81253fbf1b266::t_90f6903254403b 31-32
+  s_b81253fbf1b266::t_023b0acaeab85d 34-35,37
+  s_b81253fbf1b266::t_efae11a6dc9c2a 28
+  s_b81253fbf1b266::t_51fb4a600795f3 44
+  s_753acbdc5dce60::t_1dcf44bcaa6d61 52-67,69-80
+  s_b81253fbf1b266::t_d6bbcffb0c60fc 92
+  s_b81253fbf1b266::t_c7f0af429738c9 68
+skills/prepare-mock-data/SKILL.md
+  s_b81253fbf1b266::t_aa791f3678cb66 3,18,20-22,24-28,51,54-63,65,67-69,72
+skills/run-and-fix-tests/SKILL.md
+  s_b81253fbf1b266::t_8100d4013d5d87 18
+  s_b81253fbf1b266::t_3fac7317d8cd45 35
+  s_b81253fbf1b266::t_f14e2e58bb779c 39
+  s_b81253fbf1b266::t_95a4c33b54c942 46
+skills/write-pytest-cases/template/frame/mq_client.py
+  s_b81253fbf1b266::t_0a7f617ededd8f 2,4-6,8,10-11,13-16,19-20,23-26,30-33
+skills/prepare-framework-data/TOOLS.md
+  s_b81253fbf1b266::t_33554267a97bb3 7,9,41,46,62,64,66,71,73,76,82
+skills/write-pytest-cases/SKILL.md
+  s_b81253fbf1b266::t_50dff04083fecb 108
+  s_b81253fbf1b266::t_2611baa19f85d8 47
+  s_b81253fbf1b266::t_2d38f1ab4ea2de 50
+  s_b81253fbf1b266::t_e1b53d5f837acc 81
+skills/generate-api-tests/SKILL.md
+  s_b81253fbf1b266::t_e7c99256e1e56a 59-66
+  s_b81253fbf1b266::t_fbd91ebe795f31 12-53
+  s_b81253fbf1b266::t_5bfbf9d60b474c 10
+  s_b81253fbf1b266::t_8dfe60e9677ed3 90-92
+  s_b81253fbf1b266::t_4677ee847f271b 125-130
+  s_b81253fbf1b266::t_9c6247f2ed360c 145
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "23e9c8c93de432cff7f82a8c5136646af46341b8",
+  "prompts": {},
+  "sessions": {
+    "s_753acbdc5dce60": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3e9313c-9b86-4872-a05e-fb99b3717513",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": null
+    },
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
