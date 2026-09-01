@@ -1,0 +1,77 @@
+skills/prepare-mock-data/SKILL.md
+  s_65604356d31925::t_c7613ec733421e 39,41,43-48
+skills/generate-api-tests/CONVENTIONS.md
+  s_65604356d31925::t_53eaf2c5d2c2fb 61,64-67,76-84
+  s_b81253fbf1b266::t_f43a8ac05b3117 12
+skills/analyze-change-scenarios/SKILL.md
+  s_65604356d31925::t_3bd139fee63636 66-68
+skills/write-pytest-cases/TEMPLATE.md
+  s_8abc870f5421e1::t_ef7d6331e08e99 69
+  s_65604356d31925::t_92714bc7dd21fb 72-74
+skills/write-pytest-cases/SKILL.md
+  s_a7b7c33fe0731e::t_de0397ed7e3411 81-84,100-101
+  s_a7b7c33fe0731e::t_a5179577e67322 44-45,49-52,54-56,59-60
+  s_65604356d31925::t_d9a5b93f75a294 116-117
+skills/prepare-mock-data/TEMPLATE.md
+  s_65604356d31925::t_abbeac765075c7 21-22
+skills/write-pytest-cases/STYLE.md
+  s_a7b7c33fe0731e::t_f0ea39d39f8b22 352,359,362,366-368
+  s_a7b7c33fe0731e::t_9a0b4de8ec172f 106-108,111-112,116-117,120-123,130,133,136,139,143,154-157
+  s_a7b7c33fe0731e::t_a5e54535af753d 252,260-262,270-271,280
+  s_a7b7c33fe0731e::t_ecb58dfb7a9948 309-310,317
+  s_a7b7c33fe0731e::t_3e0cf105c680d3 26-27,30-33,48,55-57,63,72
+  s_a7b7c33fe0731e::t_74fe66158ee73b 86,88,90-92,94,96-99,101-102
+  s_a7b7c33fe0731e::t_c64bde535d1bc3 174,210-211,213-216,221,233,240-242
+skills/run-and-fix-tests/TEMPLATE.md
+  s_65604356d31925::t_b437cc4cbf5aed 16-19
+skills/generate-api-tests/SKILL.md
+  s_65604356d31925::t_fe3b6cb2b912f2 153,155-157,159-171
+skills/write-pytest-cases/template/frame/__init__.py
+  s_a7b7c33fe0731e::t_a2c7f7a4fa5c2e 6,8-18
+skills/write-pytest-cases/template/tests/test_example.py
+  s_a7b7c33fe0731e::t_021542d5d35102 8-9,12,15,20,23,29-31,39-40
+skills/write-pytest-cases/template/frame/jsonpath_utils.py
+  s_a7b7c33fe0731e::t_b11ae6373b204c 1-37
+skills/run-and-fix-tests/SKILL.md
+  s_65604356d31925::t_cb24aae1d3c9fb 66-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "51dc2da6e53193d0a1dddf7394d46a2629d88f60",
+  "prompts": {},
+  "sessions": {
+    "s_65604356d31925": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e54026c-9ecf-4e3d-a3a0-46bda9242d45",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_8abc870f5421e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ffb333-0e7f-4eac-8783-69cc1cfc4adc",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": null
+    },
+    "s_a7b7c33fe0731e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cfb556ec-4b6b-4eaa-b7af-9631ebc2085a",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
