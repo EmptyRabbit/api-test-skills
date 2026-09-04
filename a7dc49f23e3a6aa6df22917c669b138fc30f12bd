@@ -1,0 +1,40 @@
+skills/write-pytest-cases/SKILL.md
+  s_b81253fbf1b266::t_2611baa19f85d8 47
+  s_b81253fbf1b266::t_50dff04083fecb 108
+  s_b81253fbf1b266::t_2d38f1ab4ea2de 50
+  s_b81253fbf1b266::t_e1b53d5f837acc 81
+skills/write-pytest-cases/STYLE.md
+  s_b81253fbf1b266::t_eb6b3194a1855d 227,235,239,247
+  s_b81253fbf1b266::t_b40cb445a5ee96 34-35
+  s_b81253fbf1b266::t_a32f48e8059c9d 41,48,50,54
+  s_b81253fbf1b266::t_46a60f97af93fa 160,165
+  s_b81253fbf1b266::t_a76e0f3c618a33 194,196,199
+  s_b81253fbf1b266::t_3c3906811f5b83 65,73
+  s_b81253fbf1b266::t_ec90b2644958bb 285,293
+  s_b81253fbf1b266::t_6a95f341e6f6b5 109,113
+  s_b81253fbf1b266::t_90cb5531f53280 343
+  s_b81253fbf1b266::t_f43b0e4b89af02 258,266,268,272
+  s_b81253fbf1b266::t_f76732bb97f4f4 320,328
+skills/write-pytest-cases-ctrip/SKILL.md
+  s_b81253fbf1b266::t_1e1f046c5bd105 1-54
+skills/write-pytest-cases/TEMPLATE.md
+  s_b81253fbf1b266::t_c47e455d4903d4 72
+  s_b81253fbf1b266::t_1cff6ed9d29620 55
+  s_b81253fbf1b266::t_7cf8aeb28bad24 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "a7dc49f23e3a6aa6df22917c669b138fc30f12bd",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}

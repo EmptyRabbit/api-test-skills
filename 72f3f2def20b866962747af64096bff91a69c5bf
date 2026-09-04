@@ -1,0 +1,32 @@
+skills/prepare-framework-data/TEMPLATE.md
+  s_b81253fbf1b266::t_867ff22d1dbeec 62-63
+  s_b81253fbf1b266::t_9b64762cefc540 52
+  s_b81253fbf1b266::t_71c5b60a1cfd02 58
+  s_b81253fbf1b266::t_b0ff8f7ba2d11d 68
+  s_b81253fbf1b266::t_1fe42024fb7e19 15
+  s_b81253fbf1b266::t_2955be6bb25ee2 50
+skills/prepare-framework-data/TOOLS.md
+  s_b81253fbf1b266::t_33554267a97bb3 7,9,41,46,62,64,66,71,73,76,82
+skills/prepare-framework-data-ctrip/TOOLS.md
+  s_b81253fbf1b266::t_66120d751179b8 1-39
+skills/prepare-framework-data-ctrip/SKILL.md
+  s_b81253fbf1b266::t_4e2bb25c3261e4 1-25
+skills/prepare-framework-data/SKILL.md
+  s_b81253fbf1b266::t_e65d63d9666da0 3,21-27,40-41,49,54,56,59,61,63-65,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "72f3f2def20b866962747af64096bff91a69c5bf",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}

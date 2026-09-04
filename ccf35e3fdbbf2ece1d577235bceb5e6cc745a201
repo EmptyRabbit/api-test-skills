@@ -1,0 +1,20 @@
+docs/superpowers/specs/2026-08-27-api-test-skills-optimization-design.md
+  s_2d21130e7da834::t_6ce80fd7386b1a 206
+  s_2d21130e7da834::t_b7a1c0660bfc31 1-205,207-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "ccf35e3fdbbf2ece1d577235bceb5e6cc745a201",
+  "prompts": {},
+  "sessions": {
+    "s_2d21130e7da834": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "820e30f0-df98-4fd4-a647-133626fe997a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}

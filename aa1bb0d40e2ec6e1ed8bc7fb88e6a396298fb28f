@@ -1,0 +1,23 @@
+skills/write-pytest-cases-ctrip/template-overlay/frame/redis_client.py
+  s_b81253fbf1b266::t_6a6b3cbea86cf5 1-130
+skills/write-pytest-cases/template/tests/test_example.py
+  s_b81253fbf1b266::t_63ee92d8e8526a 75
+skills/write-pytest-cases/template/frame/redis_client.py
+  s_b81253fbf1b266::t_cbc9fa971f8c62 1-14,18-20,29-30,32-42,48,51-56,64-69,74-80,91,97,99,102,111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "aa1bb0d40e2ec6e1ed8bc7fb88e6a396298fb28f",
+  "prompts": {},
+  "sessions": {
+    "s_b81253fbf1b266": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a7f69e9d-033b-49f0-b1a8-6730d030b003",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}

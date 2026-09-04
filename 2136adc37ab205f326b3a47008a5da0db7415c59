@@ -1,0 +1,54 @@
+skills/write-pytest-cases/STYLE.md
+  s_055d4e1abd1e77::t_e307fff4743035 269-270
+  s_9ee7876fca874e::t_cfd3c18955c217 22-33,36-47,49-50,53-76
+  s_9ee7876fca874e::t_6f8f929f156c8d 228-234,240-246,255,259-267,278,286-292
+  s_055d4e1abd1e77::t_da84d0e808e68a 358-359,365,368-371
+  s_055d4e1abd1e77::t_11a2e4d6710524 48,51-52
+  s_055d4e1abd1e77::t_233f71ebcf1234 34-35
+  s_055d4e1abd1e77::t_b8c5850ea7c1d7 77-155
+  s_055d4e1abd1e77::t_f1bc7ae460aa63 170-171,183-193,218-219,221-224,248-250
+skills/write-pytest-cases/SKILL.md
+  s_9ee7876fca874e::t_43a6611f2712b9 17
+  s_9ee7876fca874e::t_ada33a87ae1afd 48-50
+  s_055d4e1abd1e77::t_26e170a22e3749 51-53
+  s_055d4e1abd1e77::t_6ab99b39ec2e2c 77-79,90-95
+skills/analyze-change-scenarios/SKILL.md
+  s_e036d839f5db76::t_0967cf07a6417e 66
+  s_9ee7876fca874e::t_30527d88196b99 54-56,58-62,68
+skills/write-pytest-cases/template/requirements.txt
+  s_055d4e1abd1e77::t_8765064af9db9c 7
+skills/generate-api-tests/SKILL.md
+  s_9ee7876fca874e::t_3a8108604a1134 37-38,40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "2136adc37ab205f326b3a47008a5da0db7415c59",
+  "prompts": {},
+  "sessions": {
+    "s_055d4e1abd1e77": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b656cf7d-38e5-4bc5-a73f-c16a69b0aede",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_9ee7876fca874e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0812ab99-415e-41b7-855d-e35e61d1f1da",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_e036d839f5db76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "562940d4-dbba-479a-adbe-7b9679039ab0",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
