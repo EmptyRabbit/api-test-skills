@@ -1,0 +1,21 @@
+{
+  "name": "api-test-skills",
+  "version": "1.0.0",
+  "description": "Write ~/.api-test-skills.yaml (or project-local) so generate-api-tests can load a vendor adapter.",
+  "bin": {
+    "api-test-skills": "./cli/index.js"
+  },
+  "files": [
+    "cli/index.js",
+    "cli/lib.js"
+  ],
+  "scripts": {
+    "test": "node --test cli/cli.test.js",
+    "test:py": "pytest tests/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": false
+}

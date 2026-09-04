@@ -1,0 +1,17 @@
+# 数据库连接（按需增删）
+databases:
+  main_db:
+    host: "127.0.0.1"
+    port: 3306
+    user: "root"
+    password: ""
+    database: "your_database"
+    charset: "utf8mb4"
+
+# Redis 集群连接（按需增删）
+redis:
+  main_cache:
+    host: "127.0.0.1"
+    port: 6379
+    password: ""
+    db: 0
