@@ -1,0 +1,31 @@
+apps/server/app/config.py
+  s_06996acce49d81::t_25fc09a679cafa 1-22
+apps/server/app/main.py
+  s_06996acce49d81::t_3f9f7494ac7e93 1-23
+apps/server/pyproject.toml
+  s_06996acce49d81::t_49540100a45efc 1-23
+apps/server/tests/test_health.py
+  s_06996acce49d81::t_e4a6650be03d24 1-11
+.gitignore
+  s_06996acce49d81::t_bb646b8001a95e 12-13
+apps/server/tests/conftest.py
+  s_06996acce49d81::t_a538971d4d3d6a 1-7
+apps/server/app/db.py
+  s_06996acce49d81::t_f27150b659c0a7 1-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "be943cdfa832e425156b0a92e45b8519137923dc",
+  "prompts": {},
+  "sessions": {
+    "s_06996acce49d81": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "305e98a0-b022-456e-809d-2c02c5996d96",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
