@@ -1,0 +1,28 @@
+apps/server/app/routers/sessions.py
+  s_06996acce49d81::t_13703f8d7416cc 3,78,95,113,122
+  s_06996acce49d81::t_c6f5313472ed7c 1-2,4-77,79-94,96-112,114-121,123-165
+apps/server/app/services/snapshots.py
+  s_06996acce49d81::t_0d95f2826d17a3 1-2
+apps/server/app/main.py
+  s_06996acce49d81::t_e7ad61594cae07 20-23
+apps/server/tests/test_sessions_api.py
+  s_06996acce49d81::t_699c2f8c857aa2 1-135
+apps/server/app/services/workspace.py
+  s_06996acce49d81::t_e139c550c5d3b0 63-72,76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "df069822ac49eae2a436e826ce12fe299da8f190",
+  "prompts": {},
+  "sessions": {
+    "s_06996acce49d81": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "305e98a0-b022-456e-809d-2c02c5996d96",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
