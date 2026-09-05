@@ -1,0 +1,24 @@
+apps/server/tests/test_workspace.py
+  s_06996acce49d81::t_d1833eb46f233e 1-62,65-66,72-73
+  s_06996acce49d81::t_2bee5e016e2fe3 63-64,67-71
+apps/server/app/services/workspace.py
+  s_06996acce49d81::t_38ab10a11ec159 1,4-7,20-75,77-82
+  s_06996acce49d81::t_8200d5cdbdcf30 2-3,8-19
+  s_06996acce49d81::t_95203459522be3 76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "2149d64fc3c7a9e63690f639686de3a237b2b04a",
+  "prompts": {},
+  "sessions": {
+    "s_06996acce49d81": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "305e98a0-b022-456e-809d-2c02c5996d96",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
