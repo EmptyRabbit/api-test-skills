@@ -1,0 +1,20 @@
+apps/server/app/services/agent.py
+  s_75738afe2e64ea::t_8fea07e828f8d3 101,105-110
+  s_75738afe2e64ea::t_28ace04876fc51 82,87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "13ad3f03cb5a89ce2aad7ff8f4f6de7069346cc0",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
