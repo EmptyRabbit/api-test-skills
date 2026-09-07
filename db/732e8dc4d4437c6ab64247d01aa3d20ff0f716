@@ -1,0 +1,28 @@
+apps/web/src/stores/session.ts
+  s_75738afe2e64ea::t_d1982446a53faa 1-69
+apps/web/src/components/UserNameGate.tsx
+  s_75738afe2e64ea::t_d475a88876eaec 1-28
+apps/web/src/components/SessionSidebar.tsx
+  s_75738afe2e64ea::t_69681491c821f0 2
+  s_75738afe2e64ea::t_63a79fbe4fce2e 1,3-91
+apps/web/src/stores/session.test.ts
+  s_75738afe2e64ea::t_93a54214ed0b99 1-43
+apps/web/src/App.tsx
+  s_75738afe2e64ea::t_66dd8bd2b7387d 2-4,7,10,14,16-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "db732e8dc4d4437c6ab64247d01aa3d20ff0f716",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
