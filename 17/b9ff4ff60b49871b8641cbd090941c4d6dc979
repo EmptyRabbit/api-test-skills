@@ -1,0 +1,26 @@
+apps/server/tests/test_vscode.py
+  s_75738afe2e64ea::t_bfeda500dd2f9c 1-69
+apps/server/app/services/vscode.py
+  s_75738afe2e64ea::t_97d534bb509284 1-93
+apps/server/app/routers/vscode.py
+  s_75738afe2e64ea::t_fe2228028c7073 1-63,65-116
+  s_75738afe2e64ea::t_880b02f461d095 64
+apps/server/app/main.py
+  s_75738afe2e64ea::t_7cc18da6779a88 36-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "17b9ff4ff60b49871b8641cbd090941c4d6dc979",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
