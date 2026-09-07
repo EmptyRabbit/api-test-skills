@@ -1,0 +1,25 @@
+apps/server/tests/test_files_api.py
+  s_75738afe2e64ea::t_1644c81d27cbd6 30
+  s_75738afe2e64ea::t_dcd90ec39baef4 1-12,23,25-29,31-73
+  s_75738afe2e64ea::t_4c38d616c784b5 13-22,24
+apps/server/app/routers/files.py
+  s_75738afe2e64ea::t_9cb99395b22fd2 1-87
+apps/server/app/main.py
+  s_75738afe2e64ea::t_65e92a03ea9f0a 32-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "4f1d6565f1d9a9d2a043f56e22e7dc70a124292b",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
