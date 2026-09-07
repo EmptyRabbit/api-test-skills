@@ -1,0 +1,36 @@
+apps/server/app/routers/events.py
+  s_b2c6e3192a0a67::t_d3a068f712b1bc 2-10,12,14-20,27-34
+  s_b2c6e3192a0a67::t_9237ab0d2a47f8 1,11,13,21-26
+apps/server/tests/test_bus.py
+  s_b2c6e3192a0a67::t_5c7652c8be8a17 82
+  s_b2c6e3192a0a67::t_60e38f36d13a00 1-18,21,32-33
+  s_75738afe2e64ea::t_1a192c601c6485 19-20,22-31,34-81,83-87
+apps/server/app/services/bus.py
+  s_b2c6e3192a0a67::t_e96d7561df790b 1-21
+apps/server/app/main.py
+  s_b2c6e3192a0a67::t_c7cac58be8ce68 24-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "f96c9a5d70a6832cf55e43434d20f820c796eae3",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_b2c6e3192a0a67": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cbed80fe-ef40-408f-b280-7ba4484b8b66",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
