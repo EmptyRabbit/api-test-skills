@@ -1,0 +1,42 @@
+apps/web/src/api/client.ts
+  s_75738afe2e64ea::t_48a70ae1ce4309 1-32
+apps/web/src/main.tsx
+  s_75738afe2e64ea::t_811308dab5cbfa 1-13
+apps/web/index.html
+  s_75738afe2e64ea::t_fc9e47c9a6198e 1-12
+apps/web/tsconfig.json
+  s_75738afe2e64ea::t_f7b72a5c7f55c0 13-14
+  s_75738afe2e64ea::t_e98587297ca4c1 1-12,15
+apps/web/package.json
+  s_75738afe2e64ea::t_f98501213b205d 1-32
+apps/web/src/test/setup.ts
+  s_75738afe2e64ea::t_a5137d9327fb65 1
+apps/web/src/App.tsx
+  s_75738afe2e64ea::t_241dbe7df9712e 1-14
+apps/web/src/api/client.test.ts
+  s_75738afe2e64ea::t_9ce77eab7f1802 1-23
+apps/web/src/types.ts
+  s_75738afe2e64ea::t_fe4f24e79a8a2e 1-30
+apps/web/vitest.config.ts
+  s_75738afe2e64ea::t_32310676442de1 1-11
+apps/web/vite.config.ts
+  s_75738afe2e64ea::t_d0e156a53c3d5d 1-11
+apps/web/src/monacoSetup.ts
+  s_75738afe2e64ea::t_579d670b99c32d 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "614248d05e07d1016d708f8a77ddf242406a6bf9",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
