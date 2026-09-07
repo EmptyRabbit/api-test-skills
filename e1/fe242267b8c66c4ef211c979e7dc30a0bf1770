@@ -1,0 +1,29 @@
+apps/server/tests/test_agent.py
+  s_75738afe2e64ea::t_69c5a50c804a94 1-51
+apps/server/pyproject.toml
+  s_75738afe2e64ea::t_d082b841ea2630 12
+apps/server/tests/test_chat_api.py
+  s_75738afe2e64ea::t_b85f5f16911c90 1-107
+apps/server/app/routers/chat.py
+  s_75738afe2e64ea::t_da418d2eef3354 1-81
+apps/server/app/main.py
+  s_75738afe2e64ea::t_33b968988c2e66 28-31
+apps/server/app/services/agent.py
+  s_75738afe2e64ea::t_d966f1acf5fb0e 1-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "e1fe242267b8c66c4ef211c979e7dc30a0bf1770",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
