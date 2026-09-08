@@ -1,0 +1,31 @@
+apps/web/src/App.tsx
+  s_75738afe2e64ea::t_e59ec4e9cff50f 3,21
+apps/web/src/types.ts
+  s_75738afe2e64ea::t_dc52d03ba6b0ec 18
+apps/web/src/components/VscodePanel.tsx
+  s_75738afe2e64ea::t_4fd30f6f4c261d 1-3
+apps/web/src/stores/files.ts
+  s_75738afe2e64ea::t_cec74d665b4810 1-75
+apps/web/src/components/FileTree.tsx
+  s_75738afe2e64ea::t_29606d0200c75a 1-56
+apps/web/src/components/FileEditor.tsx
+  s_75738afe2e64ea::t_c15e237a0348f3 1-81
+apps/web/src/components/FilePanel.tsx
+  s_75738afe2e64ea::t_42c97e79719db3 1-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "7e7a9e8f923f2020a8c343d393aac0c9a7b09bd2",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
