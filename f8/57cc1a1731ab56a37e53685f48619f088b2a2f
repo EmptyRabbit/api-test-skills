@@ -1,0 +1,23 @@
+apps/server/app/main.py
+  s_75738afe2e64ea::t_44a8e5ae08b243 52-67
+apps/web/README.md
+  s_75738afe2e64ea::t_2f2abeff7968e3 1-6
+apps/server/README.md
+  s_75738afe2e64ea::t_c05208485e3f26 1-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "f857cc1a1731ab56a37e53685f48619f088b2a2f",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
