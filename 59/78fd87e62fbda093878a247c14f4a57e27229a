@@ -1,0 +1,26 @@
+apps/server/README.md
+  s_75738afe2e64ea::t_5b311c07368c42 8
+  s_75738afe2e64ea::t_17159e2c36b4b3 15
+.gitignore
+  s_75738afe2e64ea::t_f87627119633be 14
+apps/server/tests/conftest.py
+  s_75738afe2e64ea::t_e3626b4ad34c1e 8-15
+apps/server/app/main.py
+  s_75738afe2e64ea::t_7ffb1156405f20 71-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "5978fd87e62fbda093878a247c14f4a57e27229a",
+  "prompts": {},
+  "sessions": {
+    "s_75738afe2e64ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6aee8f5d-4f01-4450-b1f4-b4eac2f7ef34",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
