@@ -26,6 +26,8 @@ class ModelConfig:
     name: str | None = None
     base_url: str | None = None
     auth_token: str | None = None
+    label: str | None = None
+    default: bool = False
 
 
 @dataclass
@@ -54,8 +56,10 @@ class PlatformFile:
     skill_roots: list[Path] = field(default_factory=list)
     mcp_servers: dict[str, dict[str, Any]] = field(default_factory=dict)
     oauth: OAuthConfig = field(default_factory=OAuthConfig)
+    models: list[ModelConfig] = field(default_factory=list)
     model: ModelConfig = field(default_factory=ModelConfig)
     git: GitConfig = field(default_factory=GitConfig)
+    user_name: str = ""
     source: Path | None = None
 
 
@@ -138,6 +142,76 @@ def _normalize_git(raw: Any) -> GitConfig:
     return GitConfig(token=token, username=username.strip())
 
 
+def _parse_model_item(raw: Any, *, loc: str) -> ModelConfig:
+    if not isinstance(raw, dict):
+        raise PlatformConfigError(f"{loc} 必须是 mapping")
+    name = raw.get("name")
+    if name is not None and not isinstance(name, str):
+        raise PlatformConfigError(f"{loc}.name 必须是字符串")
+    label = raw.get("label")
+    if label is not None and not isinstance(label, str):
+        raise PlatformConfigError(f"{loc}.label 必须是字符串")
+    base_url = raw.get("base_url")
+    if base_url is not None and not isinstance(base_url, str):
+        raise PlatformConfigError(f"{loc}.base_url 必须是字符串")
+    auth_token = raw.get("auth_token")
+    if auth_token is not None and not isinstance(auth_token, str):
+        raise PlatformConfigError(f"{loc}.auth_token 必须是字符串")
+    default = bool(raw.get("default"))
+    name = (name or "").strip() or None
+    return ModelConfig(
+        name=name,
+        base_url=(base_url or "").strip() or None,
+        auth_token=(auth_token or "").strip() or None,
+        label=(label or "").strip() or name,
+        default=default,
+    )
+
+
+def _normalize_models(data: dict[str, Any]) -> tuple[list[ModelConfig], ModelConfig]:
+    listed = data.get("models")
+    single = data.get("model")
+    items: list[ModelConfig] = []
+    if listed is not None:
+        if not isinstance(listed, list):
+            raise PlatformConfigError("models 必须是列表")
+        for i, item in enumerate(listed):
+            parsed = _parse_model_item(item, loc=f"models[{i}]")
+            if not parsed.name:
+                raise PlatformConfigError(f"models[{i}] 缺少 name")
+            items.append(parsed)
+    elif single:
+        items.append(_parse_model_item(single, loc="model"))
+
+    names = [m.name for m in items]
+    if len(names) != len(set(names)):
+        raise PlatformConfigError("models.name 不能重复")
+    marked = [m for m in items if m.default]
+    if len(marked) > 1:
+        raise PlatformConfigError("models 只能有一个 default: true")
+    if items:
+        default = marked[0] if marked else items[0]
+        default.default = True
+        return items, default
+    return [], ModelConfig()
+
+
+def _normalize_user_name(data: dict[str, Any]) -> str:
+    raw = data.get("user_name")
+    if raw is not None and not isinstance(raw, str):
+        raise PlatformConfigError("user_name 必须是字符串")
+    named = raw.strip() if isinstance(raw, str) else ""
+    if named:
+        return named
+    git_raw = data.get("git")
+    git_user = git_raw.get("username") if isinstance(git_raw, dict) else None
+    if isinstance(git_user, str):
+        git_user = git_user.strip()
+        if git_user and git_user != "oauth2":
+            return git_user
+    return ""
+
+
 def _normalize_oauth(raw: Any) -> OAuthConfig:
     if not raw:
         return OAuthConfig()
@@ -190,14 +264,7 @@ def load_platform_file(settings: Settings, *, env: dict[str, str] | None = None)
                 raise PlatformConfigError(f"skill_roots 不存在: {p}")
             roots.append(p)
 
-    model_raw = data.get("model") or {}
-    if not isinstance(model_raw, dict):
-        raise PlatformConfigError("model 必须是 mapping")
-    model = ModelConfig(
-        name=model_raw.get("name"),
-        base_url=model_raw.get("base_url"),
-        auth_token=model_raw.get("auth_token"),
-    )
+    models, model = _normalize_models(data)
     mcp = _normalize_mcp(data.get("mcp_servers") or {})
     vendor = str(data.get("vendor") or "none")
     return PlatformFile(
@@ -206,7 +273,9 @@ def load_platform_file(settings: Settings, *, env: dict[str, str] | None = None)
         skill_roots=roots,
         mcp_servers=mcp,
         oauth=_normalize_oauth(data.get("oauth")),
+        models=models,
         model=model,
         git=_normalize_git(data.get("git")),
+        user_name=_normalize_user_name(data),
         source=path,
     )

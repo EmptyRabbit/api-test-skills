@@ -26,9 +26,36 @@ logger = logging.getLogger(__name__)
 DEVICE_GRANT = "urn:ietf:params:oauth:grant-type:device_code"
 _WWW_METADATA = re.compile(r'resource_metadata=(?:"([^"]+)"|([^\s,]+))', re.I)
 
+_AS_TTL = timedelta(hours=6)
+
+
+class _AsCache:
+    """授权服务器元数据缓存，带 TTL；过期条目在读取时惰性清除。"""
+
+    def __init__(self, ttl: timedelta = _AS_TTL):
+        self._ttl = ttl
+        self._data: dict[str, tuple[dict[str, Any], datetime]] = {}
+
+    def get(self, key: str) -> dict[str, Any] | None:
+        hit = self._data.get(key)
+        if hit is None:
+            return None
+        meta, expires_at = hit
+        if datetime.now(timezone.utc) >= expires_at:
+            self._data.pop(key, None)
+            return None
+        return meta
+
+    def put(self, key: str, meta: dict[str, Any]) -> None:
+        self._data[key] = (meta, datetime.now(timezone.utc) + self._ttl)
+
+    def clear(self) -> None:
+        self._data.clear()
+
+
 _lock = threading.Lock()
 _flows: dict[str, dict[str, Any]] = {}
-_as_cache: dict[str, dict[str, Any]] = {}
+_as_cache = _AsCache()
 
 
 def _runtime():
@@ -198,7 +225,7 @@ def discover_as(mcp_url: str) -> dict:
     as_url = f"{issuer}/.well-known/oauth-authorization-server"
     meta = _normalize_as_meta(_http_get_json(as_url), issuer)
     with _lock:
-        _as_cache[key] = meta
+        _as_cache.put(key, meta)
     return meta
 
 
@@ -435,6 +462,7 @@ def start_device_flow(user_name: str, server: str) -> dict:
     )
     flow_id = uuid.uuid4().hex
     with _lock:
+        _sweep_expired_flows()
         _flows[flow_id] = {
             "user_name": user_name,
             "server": server,
@@ -486,6 +514,14 @@ def _save_token(flow: dict, token: dict, info: dict) -> str:
     with db.SessionLocal() as s:
         write(s)
     return account
+
+
+def _sweep_expired_flows() -> None:
+    """清掉早已过期但用户不再轮询的 device flow，防全局 dict 无限滞留。"""
+    now = datetime.now(timezone.utc)
+    expired = [fid for fid, flow in _flows.items() if now > flow["expires_at"]]
+    for fid in expired:
+        _flows.pop(fid, None)
 
 
 def poll_flow(flow_id: str) -> dict:
@@ -567,3 +603,22 @@ def mcp_servers_for_user(user_name: str) -> dict[str, dict]:
             list(tokens),
         )
     return out
+
+
+def revoke_token(user_name: str, server: str) -> bool:
+    """删除某用户在某 MCP 上的授权 token（登出/换号用）。"""
+    from app import db
+
+    if db.SessionLocal is None:
+        return False
+    with db.SessionLocal() as s:
+        row = (
+            s.query(McpOAuthTokenRow)
+            .filter_by(user_name=user_name, server_name=server)
+            .one_or_none()
+        )
+        if row is None:
+            return False
+        s.delete(row)
+        s.commit()
+    return True

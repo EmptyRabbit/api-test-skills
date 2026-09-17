@@ -27,7 +27,7 @@ export default function ChatPanel({ filesOpen, onToggleFiles }: ChatPanelProps) 
   const oauthOk = mcpOAuthReady({ loaded: oauthLoaded, servers: oauthServers, error: oauthError });
   const [text, setText] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
-  const filesLabel = filesOpen ? '收起产物' : '产物';
+  const filesLabel = filesOpen ? '收起产物' : '打开产物';
 
   useEffect(() => {
     const detach = attach(current.id);
@@ -81,10 +81,12 @@ export default function ChatPanel({ filesOpen, onToggleFiles }: ChatPanelProps) 
             {repoName(current.git_url)} {current.base_branch}→{current.feature_branch}
           </span>
         </div>
-        <button className="btn ghost tiny ml-auto" onClick={onToggleFiles}>
-          {filesLabel}
-        </button>
       </div>
+      {filesOpen ? null : (
+        <button type="button" className="files-rail" onClick={onToggleFiles}>
+          打开产物
+        </button>
+      )}
       <div className="thread-view">
         {isPreparing(current.status) && <div className="empty">工作区准备中…</div>}
         {current.status === 'error' && (
@@ -114,6 +116,22 @@ export default function ChatPanel({ filesOpen, onToggleFiles }: ChatPanelProps) 
               }}
             />
             <div className="composer-foot">
+              <button
+                type="button"
+                className={`files-toggle${filesOpen ? ' open' : ''}`}
+                aria-pressed={filesOpen}
+                onClick={onToggleFiles}
+              >
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+                  <path
+                    d="M2.5 4.5h4l1.2 1.5H13.5v7H2.5v-8.5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {filesLabel}
+              </button>
               <span className="hint">Enter 发送 · Shift+Enter 换行</span>
               {busy ? (
                 <button className="btn danger" onClick={() => void stop(current.id)}>

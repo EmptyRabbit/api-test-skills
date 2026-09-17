@@ -72,7 +72,7 @@
 
 未回填的场景视为"本次不使用 mock"，需与用户确认。
 
-## 四、遗留数据需求（交给 prepare-framework-data）
+## 四、遗留数据需求（交给 api-prepare-framework-data）
 
 不走 mock 的接口，要让它返回期望数据所需的真实环境准备：
 

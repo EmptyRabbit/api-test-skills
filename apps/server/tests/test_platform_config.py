@@ -22,7 +22,7 @@ def test_interpolate_nested_and_missing():
 
 
 def test_load_yaml_mcp_and_vendor(tmp_path, monkeypatch):
-    skills = tmp_path / "skills" / "generate-api-tests"
+    skills = tmp_path / "skills" / "api-generate-api-tests"
     skills.mkdir(parents=True)
     (skills / "SKILL.md").write_text("# x\n", encoding="utf-8")
     yml = tmp_path / "platform.yaml"
@@ -58,11 +58,123 @@ def test_load_yaml_mcp_and_vendor(tmp_path, monkeypatch):
     assert spec.mcp_servers["DOT"]["headers"]["x-token"] == "secret"
     assert spec.git.token == "glpat-xxx"
     assert spec.git.username == "oauth2"
+    assert spec.model.name == "glm-5.3"
+    assert spec.models[0].default is True
+    assert spec.models[0].auth_token == "tok"
+    assert spec.user_name == ""
+
+
+def test_load_user_name_from_yaml_or_git_username(tmp_path, monkeypatch):
+    yml = tmp_path / "platform.yaml"
+    yml.write_text(
+        yaml.safe_dump({"claude_home": str(tmp_path / "home"), "user_name": "alice"}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("app.platform_config.resolve_config_path", lambda: yml)
+    spec = load_platform_file(Settings(data_dir=tmp_path / "data"), env={})
+    assert spec.user_name == "alice"
+
+    yml.write_text(
+        yaml.safe_dump(
+            {
+                "claude_home": str(tmp_path / "home"),
+                "git": {"token": "t", "username": "zx.qiu"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    spec = load_platform_file(Settings(data_dir=tmp_path / "data"), env={})
+    assert spec.user_name == "zx.qiu"
+
+    yml.write_text(
+        yaml.safe_dump(
+            {
+                "claude_home": str(tmp_path / "home"),
+                "git": {"token": "t"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    spec = load_platform_file(Settings(data_dir=tmp_path / "data"), env={})
+    assert spec.user_name == ""
+
+
+def test_load_models_list_and_default(tmp_path, monkeypatch):
+    yml = tmp_path / "platform.yaml"
+    yml.write_text(
+        yaml.safe_dump(
+            {
+                "claude_home": str(tmp_path / "home"),
+                "models": [
+                    {
+                        "name": "glm-5.3",
+                        "label": "GLM",
+                        "default": True,
+                        "base_url": "http://gw-a",
+                        "auth_token": "tok-a",
+                    },
+                    {"name": "other", "base_url": "http://gw-b", "auth_token": "tok-b"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("app.platform_config.resolve_config_path", lambda: yml)
+    spec = load_platform_file(Settings(data_dir=tmp_path / "data"), env={})
+    assert spec.model.name == "glm-5.3"
+    assert [m.name for m in spec.models] == ["glm-5.3", "other"]
+
+    from app.services.claude_runtime import public_models, resolve_model
+
+    pub = public_models(spec)
+    assert pub[0]["default"] is True
+    assert pub[1]["name"] == "other"
+    picked = resolve_model(spec, "other", "from-ui")
+    assert picked.name == "other"
+    assert picked.base_url == "http://gw-b"
+    assert picked.auth_token == "from-ui"
+    fallback = resolve_model(spec, "other", "")
+    assert fallback.auth_token == "tok-b"
+    with pytest.raises(PlatformConfigError, match="未知模型"):
+        resolve_model(spec, "nope", None)
+
+
+def test_build_agent_options_uses_session_model(tmp_path, monkeypatch, settings):
+    yml = tmp_path / "platform.yaml"
+    yml.write_text(
+        yaml.safe_dump(
+            {
+                "claude_home": str(tmp_path / "home"),
+                "models": [
+                    {"name": "glm-5.3", "default": True, "base_url": "http://a", "auth_token": "ta"},
+                    {"name": "other", "base_url": "http://b", "auth_token": "tb"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr("app.platform_config.resolve_config_path", lambda: yml)
+    monkeypatch.setattr("app.services.workspace._data_dir", settings.data_dir)
+    prepare_runtime(settings)
+    row = SessionRow(
+        id="s-model",
+        user_name="u",
+        git_url="http://g/x.git",
+        base_branch="master",
+        feature_branch="f",
+        model_name="other",
+        auth_token="ui-tok",
+    )
+    kwargs = agent.build_agent_options(row, settings)
+    assert kwargs["model"] == "other"
+    assert kwargs["env"]["ANTHROPIC_BASE_URL"] == "http://b"
+    assert kwargs["env"]["ANTHROPIC_AUTH_TOKEN"] == "ui-tok"
+    assert kwargs["env"]["ANTHROPIC_CUSTOM_MODEL_OPTION"] == "other"
 
 
 def test_materialize_links_skills_and_writes_settings(tmp_path, monkeypatch):
     root = tmp_path / "bundle"
-    skill = root / "generate-api-tests"
+    skill = root / "api-generate-api-tests"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text("n", encoding="utf-8")
     spec_dir = tmp_path / "platform.yaml"
@@ -79,7 +191,7 @@ def test_materialize_links_skills_and_writes_settings(tmp_path, monkeypatch):
     )
     monkeypatch.setattr("app.platform_config.resolve_config_path", lambda: spec_dir)
     rt = prepare_runtime(Settings(data_dir=tmp_path / "data"))
-    dest = tmp_path / "home" / "skills" / "generate-api-tests"
+    dest = tmp_path / "home" / "skills" / "api-generate-api-tests"
     assert dest.exists()
     assert (dest / "SKILL.md").is_file()
     settings = (tmp_path / "home" / "settings.json").read_text(encoding="utf-8")

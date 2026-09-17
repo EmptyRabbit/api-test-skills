@@ -64,10 +64,9 @@ async def test_clone_repo_rewrites_https_and_sets_instead_of(tmp_path, monkeypat
         return ""
 
     monkeypatch.setattr(workspace, "_git", fake_git)
-    monkeypatch.setattr(workspace, "_git_auth", lambda: ("s3cret", "oauth2"))
     dest = tmp_path / "repo"
     url = "https://gitlab.example/g/r.git"
-    await workspace.clone_repo(url, "feature/x", dest)
+    await workspace.clone_repo(url, "feature/x", dest, token="s3cret")
     assert seen[0][0] == [
         "clone",
         "--branch",
@@ -94,9 +93,10 @@ async def test_clone_error_redacts_token(monkeypatch):
         )
 
     monkeypatch.setattr(workspace, "_git", boom)
-    monkeypatch.setattr(workspace, "_git_auth", lambda: ("s3cret", "oauth2"))
     with pytest.raises(workspace.WorkspaceError) as ei:
-        await workspace.clone_repo("https://gitlab.example/g/r.git", "main", Path("/tmp/x"))
+        await workspace.clone_repo(
+            "https://gitlab.example/g/r.git", "main", Path("/tmp/x"), token="s3cret"
+        )
     assert "s3cret" not in str(ei.value)
 
 
@@ -142,3 +142,27 @@ async def test_ensure_workspace_reclones_missing_repo(
     shutil.rmtree(workspace.workspace_root(sid), onerror=_handle_readonly)
     await workspace.ensure_workspace(s, restore_artifacts=None)
     assert (workspace.repo_dir(sid) / "app.py").exists()
+
+
+async def test_ensure_workspace_passes_token_to_clone(origin_repo, tmp_path, monkeypatch):
+    monkeypatch.setattr(workspace, "_data_dir", tmp_path)
+    seen: dict = {}
+
+    async def fake_clone(git_url, branch, dest, *, token=None, username="oauth2"):
+        seen["token"] = token
+        seen["username"] = username
+        dest.mkdir(parents=True)
+        (dest / ".git").mkdir()
+
+    monkeypatch.setattr(workspace, "clone_repo", fake_clone)
+    from app.db import SessionRow
+
+    s = SessionRow(
+        id="s-auth",
+        user_name="u",
+        git_url=str(origin_repo),
+        base_branch="master",
+        feature_branch="feature/x",
+    )
+    await workspace.ensure_workspace(s, restore_artifacts=None, token="tok-1", username="gl")
+    assert seen == {"token": "tok-1", "username": "gl"}

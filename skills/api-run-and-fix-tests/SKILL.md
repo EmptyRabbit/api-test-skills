@@ -1,12 +1,12 @@
 ---
-name: run-and-fix-tests
+name: api-run-and-fix-tests
 description: 执行 pytest 接口测试用例，对失败做归因分类并有限次修复，把疑似被测代码缺陷单独报告。当用户要跑接口用例、修复失败用例、或做一轮回归验证时使用。
 ---
 
 # 执行与修复
 
 读 `05-case-design.md` 和用例代码，执行 pytest 并处理失败，产出 `06-run-report.md`。
-产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../generate-api-tests/CONVENTIONS.md`。
+产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../api-generate-api-tests/CONVENTIONS.md`。
 
 本 skill 可以单独调用：手改用例后重跑、或者过几天再回归一次。
 
@@ -32,7 +32,7 @@ description: 执行 pytest 接口测试用例，对失败做归因分类并有�
 | 类型 | 典型表现 | 处理方式 |
 |---|---|---|
 | 用例代码问题 | 字段路径写错、请求少字段、断言值笔误、fixture 没生效 | 直接改，重跑 |
-| 测试数据问题 | mock 没生效、造的数据不对、配置项值不对、缓存没清 | 回到 `prepare-mock-data` 或 `prepare-framework-data` 修方案，或告知用户人工处理 |
+| 测试数据问题 | mock 没生效、造的数据不对、配置项值不对、缓存没清 | 回到 `api-prepare-mock-data` 或 `api-prepare-framework-data` 修方案，或告知用户人工处理 |
 | 环境问题 | 连不上 Pod、IP 变了、依赖缺失、库无权限、部署的不是 feature 分支 | 停下告知用户，不自行尝试绕过 |
 | **疑似被测代码缺陷** | 响应与预期不符，且核对代码后逻辑确实如此 | **停下报告证据，严禁放宽断言** |
 

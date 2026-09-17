@@ -13,9 +13,8 @@
 # 停止时按端口定位真实 PID 并整树终止（npm→node 层级必需）。
 #
 # 前提:
-#   后端: apps/server/.venv 已存在（否则: cd apps/server && python -m venv .venv
-#         && .venv/Scripts/pip install -e ".[dev]"）
-#   前端: apps/web/node_modules 已存在（否则: cd apps/web && npm install）
+#   后端: 无 apps/server/.venv 时会自动 python -m venv 并 pip install -e ".[dev]"
+#   前端: 无 apps/web/node_modules 时会自动 npm install
 #
 # 测试会话可用的 demo 仓库: D:/workgit/demo-test-repo
 #   base=master  feature=feature/add-empty-order-fallback
@@ -31,12 +30,17 @@ mkdir -p "$LOG_DIR"
 
 SERVER_LOG="$LOG_DIR/server.log"
 WEB_LOG="$LOG_DIR/web.log"
-PY="$SERVER_DIR/.venv/Scripts/python.exe"
 
 case "$(uname -s)" in
   MINGW* | MSYS* | CYGWIN*) IS_WIN=1 ;;
   *) IS_WIN=0 ;;
 esac
+
+if [ "$IS_WIN" = 1 ]; then
+  PY="$SERVER_DIR/.venv/Scripts/python.exe"
+else
+  PY="$SERVER_DIR/.venv/bin/python"
+fi
 
 log() { printf '\033[36m[dev]\033[0m %s\n' "$*"; }
 err() { printf '\033[31m[dev]\033[0m %s\n' "$*" >&2; }
@@ -109,13 +113,47 @@ wait_url() { # $1=url $2=超时秒 $3=服务名
   return 1
 }
 
+pick_host_python() {
+  local cand
+  for cand in python3 python; do
+    if command -v "$cand" >/dev/null 2>&1 \
+      && "$cand" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)' 2>/dev/null; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+  done
+  err "需要 Python 3.11+（PATH 中的 python3 或 python）才能创建 $SERVER_DIR/.venv"
+  return 1
+}
+
+ensure_server_venv() {
+  if [ -f "$PY" ]; then
+    return 0
+  fi
+  local host
+  host="$(pick_host_python)" || return 1
+  log "未找到虚拟环境，正在创建 $SERVER_DIR/.venv"
+  if ! "$host" -m venv "$SERVER_DIR/.venv"; then
+    err "创建虚拟环境失败"
+    return 1
+  fi
+  if [ ! -f "$PY" ]; then
+    err "venv 已创建但未找到 $PY"
+    return 1
+  fi
+  log "安装后端依赖: pip install -e \".[dev]\""
+  if ! (cd "$SERVER_DIR" && "$PY" -m pip install -e ".[dev]"); then
+    err "安装后端依赖失败"
+    return 1
+  fi
+}
+
 start_server() {
   if port_up 8000; then
     log "后端已在运行 (:8000)"
     return 0
   fi
-  if [ ! -f "$PY" ]; then
-    err "未找到 $PY —— 请先: cd apps/server && python -m venv .venv && .venv/Scripts/pip install -e \".[dev]\""
+  if ! ensure_server_venv; then
     return 1
   fi
   log "启动后端 uvicorn :8000（--reload，日志 $SERVER_LOG）"
@@ -136,13 +174,27 @@ start_server() {
   fi
 }
 
+ensure_web_deps() {
+  if [ -d "$WEB_DIR/node_modules" ]; then
+    return 0
+  fi
+  if ! command -v npm >/dev/null 2>&1; then
+    err "需要 Node.js 18+（PATH 中能跑 npm）才能安装前端依赖"
+    return 1
+  fi
+  log "未找到前端依赖，正在 npm install（$WEB_DIR）"
+  if ! (cd "$WEB_DIR" && npm install); then
+    err "npm install 失败"
+    return 1
+  fi
+}
+
 start_web() {
   if port_up 5173; then
     log "前端已在运行 (:5173)"
     return 0
   fi
-  if [ ! -d "$WEB_DIR/node_modules" ]; then
-    err "未找到 $WEB_DIR/node_modules —— 请先: cd apps/web && npm install"
+  if ! ensure_web_deps; then
     return 1
   fi
   log "启动前端 vite :5173（日志 $WEB_LOG）"

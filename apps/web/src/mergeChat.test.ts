@@ -7,7 +7,7 @@ describe('mergeToolResults', () => {
     const messages: ChatMessage[] = [
       {
         role: 'assistant',
-        blocks: [{ kind: 'tool_use', id: 't1', name: 'Skill', input: { skill: 'generate-api-tests' } }],
+        blocks: [{ kind: 'tool_use', id: 't1', name: 'Skill', input: { skill: 'api-generate-api-tests' } }],
       },
       {
         role: 'user',
@@ -38,12 +38,30 @@ describe('mergeToolResults', () => {
     expect(out[1].blocks[0]).toMatchObject({ kind: 'text', text: '可以' });
   });
 
+  it('collapses consecutive assistant tool turns', () => {
+    const messages: ChatMessage[] = [
+      {
+        role: 'assistant',
+        blocks: [{ kind: 'tool_use', id: 't1', name: 'Read', input: { file_path: 'a' } }],
+      },
+      {
+        role: 'assistant',
+        blocks: [{ kind: 'tool_use', id: 't2', name: 'Grep', input: { pattern: 'x' } }],
+      },
+      { role: 'assistant', blocks: [{ kind: 'text', text: '已确认' }] },
+    ];
+    const out = mergeToolResults(messages);
+    expect(out).toHaveLength(1);
+    expect(out[0].blocks.filter((b) => b.kind === 'tool_use')).toHaveLength(2);
+    expect(out[0].blocks.some((b) => b.kind === 'text')).toBe(true);
+  });
+
   it('folds skill dump even after the Skill tool already has a result', () => {
     const messages: ChatMessage[] = [
       {
         role: 'assistant',
         blocks: [
-          { kind: 'tool_use', id: 't1', name: 'Skill', input: { skill: 'generate-api-tests' } },
+          { kind: 'tool_use', id: 't1', name: 'Skill', input: { skill: 'api-generate-api-tests' } },
           { kind: 'tool_result', tool_use_id: 't1', content: 'ok', is_error: false },
         ],
       },

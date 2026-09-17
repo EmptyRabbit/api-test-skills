@@ -13,6 +13,8 @@ interface SessionState {
     git_url: string;
     base_branch: string;
     feature_branch: string;
+    model?: string;
+    auth_token?: string;
   }) => Promise<SessionInfo>;
   openSession: (sid: string) => Promise<void>;
   clearCurrent: () => void;

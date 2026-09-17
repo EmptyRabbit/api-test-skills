@@ -23,10 +23,13 @@
 |---|---|---|---|---|
 | C1 | XxxProcessor.java | XxxProcessor#handle | 修改 | 是 |
 | C2 | YyyJob.java | YyyJob#run | 新增 | 否 |
+| C3 | ProductTypeEnum.java 等 6 个类 | 见下方「依据」 | 修改（共享/跨链） | 是 |
 
 不在调用链上的改动（本接口测不到）：C2 —— 定时任务，需另行覆盖。
 
 ## 三、改动点行为差异
+
+改动点描述必须是人话，类名只放进「依据」（红线见 CONVENTIONS.md）。
 
 ### C1 XxxProcessor#handle
 
@@ -34,6 +37,15 @@
 - **改后**：cityId 为空时走兜底逻辑，按 prdType 取默认城市。
 - **进入条件**：scenario = T0_INSTALL 且 userContext.cid 非空。
 - **依据**：`XxxProcessor.java:88-120` / PRD 第 3.2 节。
+
+### C3 新增产品类型取值（共享改动，影响面广）
+
+- **改前 / 改后**：产品类型新增取值 `OTHER`，各处按枚举穷举实现的 switch/EnumMap/
+  配置映射（日志上报、排序候选组装、渲染投递）都多了一个原逻辑未覆盖的分支。
+- **对测试意味着什么**：针对每个分支处理点补一条覆盖 `OTHER` 的场景，验证会不会
+  静默丢字段或错误落到默认兜底。
+- **依据**：`ProductTypeEnum`、`HotelReRankingCandidate`、`ChannelDeliveryCommand` 等
+  6 个类的 switch/EnumMap 分支改动（完整清单见 `git diff` 附录）。
 
 ## 四、依赖清单
 
@@ -70,9 +82,15 @@
 
 ## 02-scenarios.md
 
+> 按批次分段产出：先只写场景总览表 + 批次安排（骨架），暂停确认；确认后从 batch1
+> 开始逐批补全该批次的场景详情（预期产出表），每批写完都暂停确认。下面是**全部批次
+> 都确认完**之后的最终形态；产出过程中的中间状态只包含骨架，或骨架 + 已确认批次的
+> 详情，状态头的「批次进度」行标出当前进度（写法见 CONVENTIONS.md「md 状态头」）。
+
 ```markdown
 > 阶段：02-测试场景
 > 状态：待确认
+> 批次进度：骨架已确认；batch1 已确认；batch2 已确认
 > 上游：01-change-analysis.md
 > 更新时间：YYYY-MM-DD HH:MM
 

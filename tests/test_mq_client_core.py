@@ -3,9 +3,24 @@
 核心占位的合约是：send / pull 都必须 raise NotImplementedError，
 错误信息里点名让用户装 vendor 适配 skill 或自己替换。
 """
+import inspect
+
 import pytest
 
 from frame.mq_client import MqClient
+
+
+def test_send_pull_signatures_match_vendor_contract():
+    """与 vendor overlay 公开签名一致；适配仓改签名时两边一起改。"""
+    send = inspect.signature(MqClient.send)
+    assert list(send.parameters) == ["topic", "data", "kwargs"]
+    assert send.parameters["kwargs"].kind is inspect.Parameter.VAR_KEYWORD
+    assert send.return_annotation is dict
+
+    pull = inspect.signature(MqClient.pull)
+    assert list(pull.parameters) == ["subject", "group", "timeout", "batch", "kwargs"]
+    assert pull.parameters["kwargs"].kind is inspect.Parameter.VAR_KEYWORD
+    assert pull.return_annotation is list
 
 
 def test_send_raises_not_implemented():

@@ -1,12 +1,12 @@
 ---
-name: prepare-mock-data
+name: api-prepare-mock-data
 description: 为接口测试场景设计外部依赖接口的 mock 方案，逐个与用户确认哪些接口该走 mock，生成可直接配置的 mock 报文。当用户要造 mock 数据、设计挡板报文、或需要确定依赖接口是否 mock 时使用。
 ---
 
 # Mock 数据准备
 
 读 `01-change-analysis.md` 的外部接口依赖和 `02-scenarios.md`，产出 `03-mock-plan.md`。
-产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../generate-api-tests/CONVENTIONS.md`。
+产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../api-generate-api-tests/CONVENTIONS.md`。
 
 ## 批次范围
 
@@ -21,7 +21,7 @@ description: 为接口测试场景设计外部依赖接口的 mock 方案，逐�
 与场景断言的对齐检查。**具体 mock 平台的接入方式**（怎么触发 mock 生效、怎么在平台上
 配置报文、怎么把 CaseId 回填）由 vendor 适配 skill 提供。
 
-如果本次运行的 vendor 提供了对应适配 skill（`prepare-mock-data-<vendor>`），
+如果本次运行的 vendor 提供了对应适配 skill（`api-prepare-mock-data-<vendor>`），
 主编排会先调本 skill 讲方法论，再调适配 skill 讲平台细节。
 
 如果没有可用的 mock 平台，本阶段允许跳过，在 `03-mock-plan.md` 里注明
@@ -78,4 +78,4 @@ description: 为接口测试场景设计外部依赖接口的 mock 方案，逐�
 确认**不走 mock** 的接口，在 md 末尾的「遗留数据需求」章节写明：
 要让接口 X 在场景 S 返回 Y，需要在真实环境准备什么数据。
 
-这一节由 `prepare-framework-data` 直接消费，是保证依赖不漏的关键接缝，不能省略。
+这一节由 `api-prepare-framework-data` 直接消费，是保证依赖不漏的关键接缝，不能省略。

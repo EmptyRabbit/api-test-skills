@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from app import db
 from app.db import SessionRow, new_session_id
-from app.services import workspace
+from app.services import lifecycle, workspace
 
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 logger = logging.getLogger(__name__)
@@ -17,6 +17,8 @@ class SessionCreate(BaseModel):
     git_url: str
     base_branch: str
     feature_branch: str
+    model: str | None = None
+    auth_token: str | None = None
 
 
 class SessionOut(BaseModel):
@@ -28,6 +30,7 @@ class SessionOut(BaseModel):
     title: str
     status: str
     error: str
+    model_name: str = ""
     created_at: str
 
 
@@ -41,69 +44,21 @@ def _to_out(s: SessionRow) -> SessionOut:
         title=s.title,
         status=s.status,
         error=s.error,
+        model_name=s.model_name or "",
         created_at=s.created_at.isoformat(),
     )
 
 
-def _get(s, sid: str, include_deleted: bool = False) -> SessionRow:
-    row = s.get(SessionRow, sid)
-    if row is None or (row.deleted and not include_deleted):
-        raise HTTPException(status_code=404, detail="session not found")
-    return row
-
-
-_inflight: set[str] = set()
-
-
-def _kick(sid: str, task) -> None:
-    if sid in _inflight:
-        return
-    _inflight.add(sid)
-    asyncio.get_running_loop().create_task(task(sid))
-
-
-def _set_status(sid: str, status: str, error: str | None = None):
-    def inner(s):
-        row = s.get(SessionRow, sid)
-        if row is None:
-            return
-        row.status = status
-        if error is not None:
-            row.error = error
-        s.commit()
-
-    return inner
-
-
-def _mark_error(sid: str, msg: str):
-    return _set_status(sid, "error", msg)
-
-
-async def _workspace_task(sid: str, *, restore: bool) -> None:
-    try:
-        row = await db.run_db(lambda s: _get(s, sid) if restore else s.get(SessionRow, sid))
-        restore_fn = None
-        if restore:
-            from app.services.snapshots import restore_artifacts
-
-            restore_fn = restore_artifacts
-        await workspace.ensure_workspace(row, restore_artifacts=restore_fn)
-        await db.run_db(_set_status(sid, "ready", ""))
-    except workspace.WorkspaceError as e:
-        await db.run_db(_mark_error(sid, str(e)))
-    except Exception as e:
-        logger.exception("%s task failed sid=%s", "restore" if restore else "clone", sid)
-        await db.run_db(_mark_error(sid, str(e)))
-    finally:
-        _inflight.discard(sid)
-
-
-async def _clone_task(sid: str) -> None:
-    await _workspace_task(sid, restore=False)
-
-
 @router.post("", status_code=202)
 async def create_session(body: SessionCreate):
+    from app.platform_config import PlatformConfigError
+    from app.services.claude_runtime import get_runtime, resolve_model
+
+    try:
+        chosen = resolve_model(get_runtime().spec, body.model, body.auth_token)
+    except PlatformConfigError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
     sid = new_session_id()
 
     def _insert(s):
@@ -115,12 +70,14 @@ async def create_session(body: SessionCreate):
                 base_branch=body.base_branch,
                 feature_branch=body.feature_branch,
                 title=body.git_url.rsplit("/", 1)[-1],
+                model_name=chosen.name or "",
+                auth_token=(body.auth_token or "").strip(),
             )
         )
         s.commit()
 
     await db.run_db(_insert)
-    _kick(sid, _clone_task)
+    lifecycle.kick_clone(sid)
     row = await db.run_db(lambda s: s.get(SessionRow, sid))
     return _to_out(row)
 
@@ -139,25 +96,14 @@ async def list_sessions(user_name: str = ""):
 
 @router.get("/{sid}")
 async def get_session(sid: str):
-    row = await db.run_db(lambda s: _get(s, sid))
-    if row.status == "ready" and not (workspace.repo_dir(sid) / ".git").exists():
-        await db.run_db(_set_status(sid, "restoring"))
-        _kick(sid, _restore_task)
-        row = await db.run_db(lambda s: _get(s, sid))
-    elif row.status == "cloning":
-        _kick(sid, _clone_task)
-    elif row.status == "restoring":
-        _kick(sid, _restore_task)
+    row = await lifecycle.get_session(sid)
+    row = await lifecycle.rehydrate(row)
     return _to_out(row)
-
-
-async def _restore_task(sid: str) -> None:
-    await _workspace_task(sid, restore=True)
 
 
 @router.post("/{sid}/snapshots")
 async def manual_snapshot(sid: str):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
     from app.services.snapshots import take_snapshot
 
     n = await take_snapshot(sid, "manual")
@@ -166,7 +112,7 @@ async def manual_snapshot(sid: str):
 
 @router.delete("/{sid}", status_code=204)
 async def delete_session(sid: str, purge: bool = Query(False)):
-    await db.run_db(lambda s: _get(s, sid, include_deleted=True))
+    await lifecycle.get_session(sid, include_deleted=True)
 
     def _soft(s):
         row = s.get(SessionRow, sid)

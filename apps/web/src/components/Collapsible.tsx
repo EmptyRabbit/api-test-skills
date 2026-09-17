@@ -13,6 +13,7 @@ export default function Collapsible({
 
   function toggle(e: MouseEvent<HTMLElement>) {
     e.preventDefault();
+    e.stopPropagation();
     setOpen((v) => !v);
   }
 

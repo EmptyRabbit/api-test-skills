@@ -4,9 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
-from app import db
-from app.routers.sessions import _get
-from app.services import workspace
+from app.services import lifecycle, workspace
 from app.services.snapshots import SKIP_DIRS
 
 router = APIRouter(prefix="/api/sessions", tags=["files"])
@@ -24,7 +22,7 @@ def _safe_path(sid: str, rel: str) -> Path:
 
 @router.get("/{sid}/files/tree")
 async def tree(sid: str, path: str = Query("")):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
 
     root = workspace.workspace_root(sid).resolve()
     base = _safe_path(sid, path)
@@ -52,7 +50,7 @@ async def tree(sid: str, path: str = Query("")):
 
 @router.get("/{sid}/files/content")
 async def read_file(sid: str, path: str = Query(...)):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
 
     p = _safe_path(sid, path)
     if not p.is_file():
@@ -74,7 +72,7 @@ class FileWrite(BaseModel):
 
 @router.put("/{sid}/files/content")
 async def write_file(sid: str, body: FileWrite):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
 
     p = _safe_path(sid, body.path)
 

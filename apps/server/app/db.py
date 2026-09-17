@@ -42,6 +42,8 @@ class SessionRow(Base):
     )
     claude_tasks: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     error: Mapped[str] = mapped_column(Text, default="")
+    model_name: Mapped[str] = mapped_column(String(200), default="")
+    auth_token: Mapped[str] = mapped_column(Text, default="")
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_now, onupdate=_now)
@@ -118,6 +120,8 @@ def _ensure_session_cli_columns(engine: Engine) -> None:
     wanted = {
         "claude_transcript": "LONGTEXT" if mysql else "TEXT",
         "claude_tasks": "JSON" if mysql else "TEXT",
+        "model_name": "VARCHAR(200)",
+        "auth_token": "LONGTEXT" if mysql else "TEXT",
     }
     missing = [(name, sqltype) for name, sqltype in wanted.items() if name not in cols]
     if not missing:

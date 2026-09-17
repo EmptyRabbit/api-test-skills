@@ -89,8 +89,8 @@ async def test_chat_roundtrip_with_fake_client(client, ready_session):
 
 
 def test_chat_endpoint_409_when_running(client, ready_session, monkeypatch):
-    # Mark session as running; POST chat should return 409
-    monkeypatch.setitem(agent_mod._running, ready_session, object())
+    # 接口级打桩：turn_active 就是 409 的判断面，不再摸 _running dict
+    monkeypatch.setattr(agent_mod, "turn_active", lambda _sid: True)
     resp = client.post(
         f"/api/sessions/{ready_session}/chat", json={"text": "hi"}
     )
@@ -99,6 +99,7 @@ def test_chat_endpoint_409_when_running(client, ready_session, monkeypatch):
 
 def test_stop_calls_interrupt(client, ready_session):
     fake = FakeClient(options=None)
+    # 直填 SDK adapter 的注册表：interrupt 路径需要真实 client 对象
     agent_mod._running[ready_session] = fake
     resp = client.post(f"/api/sessions/{ready_session}/stop")
     assert resp.status_code == 200

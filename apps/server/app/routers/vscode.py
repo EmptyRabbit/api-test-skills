@@ -8,9 +8,7 @@ from fastapi import APIRouter, HTTPException, Request, WebSocket
 from fastapi.responses import Response, StreamingResponse
 from websockets.asyncio.client import connect
 
-from app import db
-from app.routers.sessions import _get
-from app.services import vscode
+from app.services import lifecycle, vscode
 
 router = APIRouter(prefix="/api/sessions", tags=["vscode"])
 
@@ -137,7 +135,7 @@ def _touch(sid: str) -> None:
 
 @router.post("/{sid}/vscode/ensure")
 async def ensure_vscode(sid: str):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
     port = await _ensure_port(sid)
     return {"port": port, "ready": True}
 
@@ -151,7 +149,7 @@ async def ensure_vscode(sid: str):
     methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
 )
 async def proxy_http(sid: str, request: Request, path: str = ""):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
     port = await _ensure_port(sid)
     path, query = remap_vscode_asset_request(sid, path, request.url.query)
     headers = _drop_headers(request.headers, HOP_HEADERS)
@@ -196,7 +194,7 @@ async def proxy_http(sid: str, request: Request, path: str = ""):
 @router.websocket("/{sid}/vscode/{path:path}")
 async def proxy_ws(ws: WebSocket, sid: str, path: str = ""):
     try:
-        await db.run_db(lambda s: _get(s, sid))
+        await lifecycle.get_session(sid)
     except Exception:
         await ws.close(code=4404)
         return

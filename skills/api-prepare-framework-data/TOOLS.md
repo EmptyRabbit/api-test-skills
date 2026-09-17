@@ -1,6 +1,6 @@
 # 框架工具用法
 
-模板工程位于 `../write-pytest-cases/template/`，`frame/` 下的客户端复制到产物目录后直接可用。
+模板工程位于 `../api-write-pytest-cases/template/`，`frame/` 下的客户端复制到产物目录后直接可用。
 
 ## DB
 
