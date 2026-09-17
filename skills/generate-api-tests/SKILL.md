@@ -36,17 +36,9 @@ npx api-test-skills status
 若用户没有配置文件又想启用适配，引导他执行 `npx api-test-skills use <vendor-name>`，
 不要让他手工 echo 写文件。
 
-读到 vendor（非 none）后，各阶段的 skill 调用规则变为：
-
-| 阶段 | 核心 skill | 追加调用（若 vendor 有对应适配） |
-|---|---|---|
-| 2 | `analyze-change-scenarios` | 无 |
-| 3 | `prepare-mock-data` | `prepare-mock-data-<vendor>` |
-| 4 | `prepare-framework-data` | `prepare-framework-data-<vendor>` |
-| 5 | `write-pytest-cases` | `write-pytest-cases-<vendor>` |
-| 6 | `run-and-fix-tests` | 无 |
-
-主编排的操作顺序是「先调核心讲方法论，再调适配讲工具细节」，两者共同产出该阶段的 md。
+读到 vendor（非 none）后，阶段 3、4、5 各自追加调用对应的 `-<vendor>` 适配 skill
+（完整映射见下面「阶段流水线」表）：先调核心 skill 讲方法论，再调适配 skill 讲工具细节，
+两者共同产出该阶段的 md。
 
 如果 vendor 声明为某个具体名字但对应的适配 skill 未安装，主编排必须**停下报错**：
 
@@ -120,6 +112,37 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 - 有值但可疑（例如仓库路径填了但本地不存在、分支名填了但 `git rev-parse` 解不出）时，
   当场校验并回问用户，别默默继续。
 
+**`00-context.md` 输出格式**：一份扁平的键值清单，不要做成表格。表格适合"多行同结构"的
+数据（场景列表、字段清单），`00-context.md` 只有几项各自独立的输入，塞进表格反而要么
+每格挤好几行文字、要么强行加一列"来源"给每一项贴标签——两者都会把简单信息搞得难读。
+按下面的结构写：
+
+```markdown
+> 阶段：00-输入收集
+> 状态：待确认
+> 上游：无
+> 更新时间：2026-09-16 18:40
+
+**一句话结论**：必填项已收集齐，vendor=xxx；发布环境是按 Pod IP 推断的，待你确认。
+
+## 输入
+
+- operation：`api/testProcessorChain`
+- 发布环境：fat0
+- Pod IP：10.119.251.23
+- 仓库：`/path/to/repo`（base=master → feature=feature/xxx）
+- appid：xxx（vendor 相关，vendor=none 时省略这行）
+- 产物目录：`myapp/tests/generated`
+- 相关文档：飞书链接 / 无
+
+## 待确认
+
+- [ ] 发布环境未直接提供，按 Pod IP 网段推断为 fat，请确认是否准确。
+```
+
+只有真正靠推断而非用户明确给出的项，才单独写进「待确认」；不要为每一项都标注
+"用户提供"这种不言自明的来源。
+
 ### 2. 断点续跑
 
 每次被调用时，先扫 `<产物目录>/docs/` 根目录和各 `docs/batch<N>/` 子目录下 md 的状态头，
@@ -130,20 +153,18 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 
 ### 3. 逐阶段调度
 
-每个阶段：调用子 skill → 产出 md → **暂停**，请用户 review → 用户确认（或直接改 md）
-→ 把状态头改成 `已确认` → 进入下一阶段。
+每个阶段按此执行：
 
-一个批次的阶段 6 确认后，先做本批次收尾汇报，再开下一批次目录。开新批次前不要提前
-生成下一批的 mock 或用例。
+1. 调用核心子 skill，得到该阶段的方法论指引；
+2. 若当前 vendor 有对应适配 skill，追加调用它，把工具细节写进同一份 md；
+3. 产出 md → **暂停**，请用户 review → 用户确认（或直接改 md）→ 状态头改成 `已确认`
+   → 进入下一阶段。
 
 允许跳过阶段。例如某批次所有依赖都不走 mock 时跳过阶段 3，但要在该批次的
 `03-mock-plan.md` 里写明"本批次不使用 mock"并说明原因，保持链路可追溯。
 
-每个阶段的具体动作：
-
-1. 主编排调用核心子 skill，得到该阶段的方法论指引；
-2. 若当前 vendor 有对应适配 skill，主编排追加调用它，让它把工具细节写进同一份 md；
-3. 产出 md → **暂停**，请用户 review → 用户确认后进入下一阶段。
+一个批次的阶段 6 确认后，先做本批次收尾汇报，再开下一批次目录。开新批次前不要提前
+生成下一批的 mock 或用例。
 
 ### 4. 收尾
 

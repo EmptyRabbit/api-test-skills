@@ -6,6 +6,9 @@
 > 上游：02-scenarios.md
 > 更新时间：YYYY-MM-DD HH:MM
 
+**一句话结论**：本批 3 个场景涉及 2 个外部接口，`queryUserCoin` 走 mock（FAT 造不出
+空返回），`queryCityInfo` 直连；CASE-01/02 报文已写好，等你去平台配完回填 CaseId。
+
 # Mock 方案
 
 本文件只覆盖 batch1 的场景。

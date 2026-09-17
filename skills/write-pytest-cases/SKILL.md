@@ -81,25 +81,12 @@ fixture 在用例结束后写入 `logs/<用例函数名>.md`。**用例代码无
 **统一走 jsonpath**：所有响应断言用 `jsonpath-ng`，禁止链式取值。工具函数
 `jp` / `jp_all` / `assert_jp` / `load_json_field` 从 `frame.jsonpath_utils` 引入，
 不在用例文件里重复实现。string 化的 JSON 字段用 `load_json_field` 解开再走 jsonpath。
-写法与更多示例见 STYLE.md。
 
 **字段级完整断言**：`02-scenarios.md` 里写的每一条预期结果都要断到，不允许遗漏。
 有副作用的场景补 DB / Redis / MQ 落地断言。
 
-**禁止防御性模糊写法**：
-
-```python
-# 禁止：同时接受多种返回，真出问题抓不住
-assert selling is True or str(selling).lower() == "true"
-value = data.get("cityId") or data.get("cityid")
-
-# 禁止：链式取值，失败信息没有路径
-assert resp["data"]["items"][0]["id"] == "A"
-
-# 正确：结构已确定，jsonpath 直接断
-assert_jp(resp, "$.hasSellingPoint", True)
-assert_jp(resp, "$.cityId", 228)
-```
+**禁止防御性模糊写法**：不写多值兼容断言、不写字段名兜底查找、不绕开 jsonpath 直接链式取值。
+反例和正确写法见 STYLE.md「反面写法」，不再重复列举。
 
 响应结构在分析阶段就该确定（读 DTO + 必要时真实调一次接口）。
 到了写代码这一步还拿不准某个字段的类型或大小写，**停下来问用户**，不要用兼容代码糊过去。

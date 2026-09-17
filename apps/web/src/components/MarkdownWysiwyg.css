@@ -1,0 +1,15 @@
+.md-wysiwyg {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.md-wysiwyg .bn-container {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  font-family: var(--sans);
+}

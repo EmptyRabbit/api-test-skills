@@ -9,3 +9,8 @@ docs/
 
 .artifacts/
 node_modules/
+apps/server/data/
+apps/server/platform.yaml
+apps/web/dist/
+apps/server/*.egg-info/
+apps/.dev/

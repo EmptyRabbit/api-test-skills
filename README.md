@@ -16,15 +16,26 @@
 
 ## 安装
 
+以 **插件** 安装后，slash 菜单里会带 `api-test:` 前缀，例如
+`api-test:generate-api-tests`、`api-test:analyze-change-scenarios`。
+
+**Cursor**：把本仓库加到插件源（Customize → Plugins，或团队 marketplace 导入 Git 仓库），安装名为 `api-test` 的插件。
+
+**Claude Code**：
+
+```bash
+/plugin marketplace add <org>/api-test-skills
+/plugin install api-test@api-test-skills
+```
+
+不需要前缀、只要把 skill 目录拷到本机时，仍可用：
+
 ```bash
 npx skills add https://github.com/<org>/api-test-skills.git -g -y --agent claude-code cursor
 ```
 
-只装到当前项目：去掉 `-g`。之后升级：
-
-```bash
-npx skills update
-```
+只装到当前项目：去掉 `-g`。之后升级：`npx skills update`。
+这样装出来的是散 skill（`/generate-api-tests`），**没有** `api-test:` 前缀。
 
 装了 vendor 适配包后，写一份配置（一次配置，永久生效）：
 
@@ -60,9 +71,9 @@ npx api-test-skills use <vendor-name> --project
 
 ## 怎么用
 
-在装了 skill 的工作区里说一句：
+在装了插件的工作区里说一句（或选 `/api-test:generate-api-tests`）：
 
-> 用 generate-api-tests 帮我给这次改动生成接口测试用例
+> 用 api-test:generate-api-tests 帮我给这次改动生成接口测试用例
 
 然后按提示提供必要信息：
 
