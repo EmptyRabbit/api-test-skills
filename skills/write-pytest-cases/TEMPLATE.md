@@ -6,6 +6,9 @@
 > 上游：02-scenarios.md、batch1/03-mock-plan.md、batch1/04-framework-data.md
 > 更新时间：YYYY-MM-DD HH:MM
 
+**一句话结论**：本批 4/5 个场景生成了用例（R1 已确认删除），映射见下表；执行前还有
+3 项人工待办（回填 CaseId、配连接信息、确认配置项）。
+
 # 用例设计说明
 
 ## 一、工程结构

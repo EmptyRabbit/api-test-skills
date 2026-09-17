@@ -144,18 +144,9 @@ from jsonpath_ng.ext import parse
 assert not parse("$.data.legacyField").find(resp)
 ```
 
-### 禁止
-
-```python
-# 禁止：链式取值，失败信息只有 KeyError，看不出哪条路径挂了
-assert resp["data"]["items"][0]["id"] == "A"
-
-# 禁止：既 jsonpath 又直接 get，风格混乱
-resp["success"]           # ← 用 assert_jp
-
-# 禁止：在用例文件里重复定义 _jp / _assert_jp / _jp_all
-# 统一从 frame.jsonpath_utils 引入
-```
+此外，同一份用例里不要既用 jsonpath 又混用 `resp["success"]` 这种直接 get；
+`jp` / `assert_jp` / `jp_all` 系列统一从 `frame.jsonpath_utils` 引入，不在用例文件里
+重复定义。链式取值等其他反例见文末「反面写法」。
 
 ## 文件骨架
 
@@ -347,6 +338,8 @@ from tests.env_config import APP_ID, ENV_NAME, OPERATION, POD_IP
 
 ## 反面写法
 
+用例代码里全部禁止的写法归纳在这一处，前面章节不再重复举例：
+
 ```python
 # 反例 1：模糊断言，几种返回都能过，抓不到 bug
 assert_jp(resp, "$.selling", True)   # 正
@@ -355,18 +348,15 @@ assert selling is True or str(selling).lower() == "true"   # 反
 # 反例 2：字段名兜底查找，掩盖真实结构
 value = data.get("cityId") or data.get("cityid") or data.get("CityId")
 
-# 反例 3：只断一个字段就收工，场景里写的其他预期全丢了
-assert_jp(resp, "$.success", False)
-
-# 反例 4：为了让用例变绿放宽断言
-assert jp(resp, "$.errorCode") in ("20011", "20010", "50000")
-
-# 反例 5：绕开 jsonpath 直接链式取值
+# 反例 3：绕开 jsonpath 直接链式取值，失败信息只有 KeyError，看不出哪条路径挂了
 assert resp["data"]["items"][0]["id"] == "A"
 
-# 反例 6：docstring 首行用「场景：S1 ...」把 ID 顶到最前，读第一行看不出在测什么
-# 应改为业务语义前置、ID 括号收尾：「有卖点+有城... （对应 S1，改动点 C1）」
+# 反例 4：只断一个字段就收工，场景里写的其他预期全丢了
+assert_jp(resp, "$.success", False)
+
+# 反例 5：为了让用例变绿放宽断言——实际返回和预期不符是发现了问题，应停下来报告，
+# 而不是把预期改成实际
+assert jp(resp, "$.errorCode") in ("20011", "20010", "50000")
 ```
 
-反例 4 尤其危险：如果实际返回和预期不符，那是发现了问题，应该停下来报告，
-而不是把预期改成实际。
+docstring 首行 ID 前置的反例见前面「用例注释」一节，这里不再重复。

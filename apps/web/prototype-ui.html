@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>智能测试平台 · UI 原型（可丢弃）</title>
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --panel: #ecece8;
+      --card: #ffffff;
+      --ink: #1c1c1a;
+      --muted: #6b6b64;
+      --line: #dddcd6;
+      --accent: #2f6fed;
+      --ready: #1f7a4c;
+      --run: #c45c26;
+      --danger: #c23030;
+      --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+      --sans: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+    }
+    button, input, textarea { font-family: inherit; font-size: 14px; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    html, body, #app { height: 100%; }
+    .app { height: 100%; min-height: 0; display: grid; grid-template-rows: 48px 1fr; overflow: hidden; }
+
+    /* 智能测试平台顶栏菜单 */
+    .menubar {
+      display: flex; align-items: center; gap: 4px;
+      padding: 0 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      margin-right: 12px; padding-right: 12px;
+      border-right: 1px solid var(--line);
+      font-weight: 700; font-size: 14px; letter-spacing: .02em;
+    }
+    .brand .mark {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: #1c1c1a; color: #fff;
+      display: grid; place-items: center; font-size: 11px;
+    }
+    .current-app { color: var(--muted); font-size: 13px; }
+    .who {
+      margin-left: auto; display: flex; align-items: center; gap: 8px;
+    }
+    .who input {
+      width: 120px; border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px;
+    }
+
+    .body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      align-items: stretch;
+    }
+
+    /* Codex 式左侧：新会话 / 最近线程 */
+    .side {
+      background: var(--panel);
+      display: flex; flex-direction: column; min-height: 0; height: 100%;
+      padding: 10px 8px;
+    }
+    .side-btn {
+      width: 100%; text-align: left; border: 0; background: transparent;
+      padding: 8px 10px; border-radius: 10px; color: var(--ink);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .side-btn:hover, .side-btn.on { background: #fff; }
+    .side h4 {
+      margin: 14px 8px 6px; font-size: 11px; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+    .threads { flex: 1; overflow: auto; }
+    .thread {
+      padding: 8px 10px; border-radius: 10px; cursor: pointer;
+    }
+    .thread:hover, .thread.on { background: #fff; }
+    .thread .t { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .thread .s { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .main { display: grid; grid-template-columns: 1fr 0px; min-width: 0; min-height: 0; height: 100%; }
+    .main.files { grid-template-columns: 1fr min(44vw, 580px); }
+    .stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; background: var(--bg); }
+    .drawer {
+      border-left: 1px solid var(--line); background: #fff;
+      display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+    }
+
+    /* Codex 式首页：标题 + 仓库 + 输入框作为一组垂直居中 */
+    .home {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px 0;
+    }
+    .home-col {
+      width: min(720px, calc(100% - 48px));
+      display: flex; flex-direction: column;
+    }
+    .home-hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .home h1 { margin: 0 0 8px; font-size: 32px; font-weight: 600; letter-spacing: -.02em; }
+    .home .sub { color: var(--muted); margin: 0; }
+
+    .composer-wrap { width: 100%; flex-shrink: 0; }
+    .composer {
+      background: #fff; border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(28,28,26,.06);
+      padding: 10px 12px;
+      display: flex; flex-direction: column;
+    }
+    .composer textarea {
+      width: 100%; border: 0; resize: none; min-height: 72px; max-height: 180px;
+      padding: 6px 4px; background: transparent; line-height: 1.5;
+    }
+    .composer-foot {
+      display: flex; align-items: center; gap: 8px; padding-top: 8px;
+    }
+    .hint { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+    .btn {
+      border: 0; background: var(--ink); color: #fff;
+      border-radius: 999px; padding: 8px 14px; font-weight: 600;
+    }
+    .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .btn.danger { background: var(--danger); }
+    .btn.tiny { padding: 4px 10px; font-size: 12px; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* 多仓库对比 */
+    .repos {
+      width: 100%; flex-shrink: 0;
+      margin: 0 0 12px;
+      background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 12px;
+    }
+    .repo-row:last-child { margin-bottom: 0; }
+    .repos-h {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .repos-h strong { font-size: 13px; }
+    .repo-row {
+      display: grid; grid-template-columns: 1.6fr .7fr .9fr 32px;
+      gap: 6px; margin-bottom: 6px; align-items: center;
+    }
+    .repo-row input {
+      border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; width: 100%;
+      background: var(--bg);
+    }
+    .iconx {
+      width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: var(--muted);
+    }
+    .iconx:hover { background: #f1e4e4; color: var(--danger); }
+
+    .chat-top {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; border-bottom: 1px solid var(--line);
+    }
+    .chat-top .title { font-weight: 650; }
+    .status {
+      font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor;
+    }
+    .s-ready { color: var(--ready); }
+    .s-run { color: var(--run); }
+    .s-fail { color: var(--danger); }
+    .s-prep { color: var(--accent); }
+    .think {
+      border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; background: #fff;
+    }
+    .think-h { padding: 6px 10px; cursor: pointer; font-size: 12px; color: var(--muted); }
+    .think-b { display: none; padding: 0 10px 8px; font-size: 12px; color: var(--muted); white-space: pre-wrap; }
+    .think.open .think-b { display: block; }
+    .md-preview { flex: 1; overflow: auto; padding: 12px; line-height: 1.55; }
+    .md-preview h1 { font-size: 18px; margin: 0 0 8px; }
+    .md-preview ul { margin: 0; padding-left: 18px; }
+    .editor-bar {
+      display: flex; gap: 8px; align-items: center; padding: 6px 8px;
+      border-bottom: 1px solid var(--line); font-size: 12px;
+    }
+    .editor-bar .path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dirty { color: var(--run); font-size: 11px; }
+    .vscode-frame {
+      flex: 1; margin: 8px; border: 1px solid var(--line); border-radius: 8px;
+      background: #1e1e1e; color: #ccc; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .vscode-bar {
+      height: 28px; background: #323233; display: flex; align-items: center; gap: 8px;
+      padding: 0 10px; font-size: 11px; color: #bbb;
+    }
+    .vscode-dot { width: 8px; height: 8px; border-radius: 50%; background: #3c3c3c; }
+    .vscode-body { flex: 1; padding: 16px; font-family: var(--mono); font-size: 12px; color: #9cdcfe; }
+    .thread-view { flex: 1; overflow: auto; padding: 20px max(24px, calc(50% - 360px)); }
+    .bubble-user {
+      margin: 10px 0 10px auto; max-width: 78%;
+      background: #1c1c1a; color: #fff; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
+      white-space: pre-wrap; line-height: 1.5;
+    }
+    .asst { margin: 14px 0; line-height: 1.55; }
+    .tool { border: 1px solid var(--line); border-radius: 12px; margin: 8px 0; background: #fff; }
+    .tool-h { display: flex; gap: 8px; align-items: center; padding: 8px 10px; cursor: pointer; font-size: 13px; }
+    .chip { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius: 6px; background: #ecece8; }
+    .tool-b { display: none; padding: 0 10px 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: pre-wrap; }
+    .tool.open .tool-b { display: block; }
+    .dock-composer {
+      padding: 12px 0 16px;
+      display: flex; justify-content: center; flex-shrink: 0;
+    }
+    .dock-composer .composer-wrap { width: min(720px, calc(100% - 48px)); }
+    .file { font-size: 13px; padding: 6px 8px; cursor: pointer; border-radius: 6px; }
+    .file:hover, .file.on { background: var(--panel); }
+    .code {
+      flex: 1; margin: 0; padding: 12px; overflow: auto; background: #1c1c1a; color: #e8e8e3;
+      font-family: var(--mono); font-size: 12px; line-height: 1.5;
+    }
+    .repo-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill {
+      font-size: 11px; background: var(--panel); border-radius: 999px; padding: 3px 8px;
+      font-family: var(--mono);
+    }
+    .proto {
+      margin-top: auto;
+      padding: 8px 10px 4px;
+      color: #8a8a84; font-size: 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .note { font-size: 12px; color: var(--muted); }
+    .empty { color: var(--muted); text-align: center; padding: 40px 16px; }
+  </style>
+</head>
+<body>
+  <!-- Codex-style entry + 智能测试平台 top menu + multi-repo compare. Throwaway prototype. -->
+  <div id="app"></div>
+  <script>
+    const FILES = {
+      "tests/test_order_create.py": `def test_order_create_ok(client, mock_pay):\n    resp = client.post("/order/create", json={"sku": "P01"})\n    assert resp.status_code == 200\n`,
+      "docs/scenarios.md": `# 场景清单\n- 正常创单\n- 支付超时回滚\n`,
+      "conftest.py": `import pytest\n\n@pytest.fixture\ndef client():\n    ...\n`,
+    };
+    const TREE = ["docs/scenarios.md", "tests/test_order_create.py", "conftest.py"];
+
+    const blankRepos = () => ([
+      { url: "", base: "master", feat: "" },
+    ]);
+
+    const state = {
+      userName: "tester",
+      view: "home",
+      sessions: [
+        {
+          id: "s1",
+          title: "创单支付超时",
+          status: "ready",
+          repos: [
+            { url: "https://gitlab.example.com/trade/order-svc.git", base: "master", feat: "feature/pay-timeout" },
+            { url: "https://gitlab.example.com/pay/pay-gateway.git", base: "master", feat: "feature/timeout-callback" },
+          ],
+        },
+        {
+          id: "s2",
+          title: "库存扣减",
+          status: "running",
+          repos: [
+            { url: "https://gitlab.example.com/trade/stock-svc.git", base: "master", feat: "feature/deduct" },
+          ],
+        },
+      ],
+      currentId: null,
+      messages: [],
+      draft: "",
+      busy: false,
+      filesOpen: false,
+      vscode: false,
+      previewMd: true,
+      dirty: false,
+      fileContents: { ...FILES },
+      selected: "tests/test_order_create.py",
+      homeRepos: [
+        { url: "https://gitlab.example.com/trade/order-svc.git", base: "master", feat: "feature/pay-timeout" },
+        { url: "https://gitlab.example.com/pay/pay-gateway.git", base: "master", feat: "feature/timeout-callback" },
+      ],
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    const cur = () => state.sessions.find((s) => s.id === state.currentId);
+    const repoName = (url) => (url || "").replace(/\/$/, "").split("/").pop() || "未命名仓库";
+    const statusLabel = (st) => ({ ready: "就绪", running: "运行中", cloning: "准备中", restoring: "准备中", error: "失败" }[st] || st);
+    const statusClass = (st) => (st === "running" ? "s-run" : st === "error" ? "s-fail" : (st === "cloning" || st === "restoring") ? "s-prep" : "s-ready");
+
+    function repoEditor(listKey) {
+      const list = state[listKey];
+      const rows = list.map((r, i) => `
+        <div class="repo-row">
+          <input data-repo="${listKey}" data-i="${i}" data-k="url" placeholder="GitLab 仓库 git 地址" value="${esc(r.url)}" />
+          <input data-repo="${listKey}" data-i="${i}" data-k="base" placeholder="base" value="${esc(r.base)}" />
+          <input data-repo="${listKey}" data-i="${i}" data-k="feat" placeholder="对比分支 feature/…" value="${esc(r.feat)}" />
+          <button class="iconx" data-act="rm-repo" data-key="${listKey}" data-i="${i}" ${list.length === 1 ? "disabled" : ""} title="移除">×</button>
+        </div>`).join("");
+      return `<div class="repos">
+        <div class="repos-h">
+          <strong>仓库与对比分支</strong>
+          <span class="note">可加多个服务仓，每个仓一组 base → feature</span>
+          <button class="btn ghost tiny" style="margin-left:auto" data-act="add-repo" data-key="${listKey}">＋ 仓库</button>
+        </div>
+        ${rows}
+      </div>`;
+    }
+
+    function pills(repos) {
+      return `<div class="repo-pills">${repos.map((r) =>
+        `<span class="pill">${esc(repoName(r.url))} ${esc(r.base)}→${esc(r.feat || "?")}</span>`
+      ).join("")}</div>`;
+    }
+
+    function threadHtml() {
+      if (!state.messages.length) return `<div class="empty">会话已创建。在下方继续下发任务。</div>`;
+      return state.messages.map((m) => {
+        if (m.role === "user") return `<div class="bubble-user">${esc(m.text)}</div>`;
+        const tools = (m.tools || []).map((t, i) => `
+          <div class="tool ${t.open ? "open" : ""}">
+            <div class="tool-h" data-act="toggle-tool" data-i="${i}"><span class="chip">${esc(t.name)}</span> ${esc(t.summary)}</div>
+            <div class="tool-b">${esc(t.body)}</div>
+          </div>`).join("");
+        const think = m.thinking ? `<div class="think ${m.thinkOpen ? "open" : ""}">
+            <div class="think-h" data-act="toggle-think">${m.thinkOpen ? "收起思考过程" : "思考过程"}</div>
+            <div class="think-b">${esc(m.thinking)}</div>
+          </div>` : "";
+        return `<div class="asst">${think}${tools}<p>${esc(m.text)}</p></div>`;
+      }).join("");
+    }
+
+    function renderMd(src) {
+      return esc(src)
+        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/^- (.+)$/gm, "<li>$1</li>")
+        .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>");
+    }
+
+    function filePane() {
+      const tabs = `
+        <div style="display:flex;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)">
+          <button class="btn ${state.vscode ? "ghost" : ""} tiny" data-act="files-tab">文件</button>
+          <button class="btn ${state.vscode ? "" : "ghost"} tiny" data-act="vscode">VS Code</button>
+        </div>`;
+      if (state.vscode) {
+        return `${tabs}
+          <div class="vscode-frame">
+            <div class="vscode-bar"><span class="vscode-dot"></span><span class="vscode-dot"></span><span class="vscode-dot"></span> workspace · ${esc(cur()?.title || "")}</div>
+            <div class="vscode-body">// 内嵌 VS Code（code-server）<br/>打开 tests/test_order_create.py<br/><br/>def test_order_create_ok(...)</div>
+          </div>`;
+      }
+      const tree = TREE.map((p) => `<div class="file ${state.selected === p ? "on" : ""}" data-act="open-file" data-p="${esc(p)}">${esc(p)}</div>`).join("");
+      const code = state.fileContents[state.selected] ?? "# 选择文件\n";
+      const isMd = state.selected.endsWith(".md");
+      const body = (isMd && state.previewMd)
+        ? `<div class="md-preview">${renderMd(code)}</div>`
+        : `<textarea class="code" id="fileBody" style="border:0">${esc(code)}</textarea>`;
+      return `${tabs}
+        <div style="display:flex;min-height:0;flex:1;overflow:hidden">
+          <div style="width:200px;overflow:auto;border-right:1px solid var(--line);padding:6px">${tree}</div>
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+            <div class="editor-bar">
+              <span class="path">${esc(state.selected)}</span>
+              ${state.dirty ? `<span class="dirty">未保存</span>` : ""}
+              ${isMd ? `<button class="btn ghost tiny" data-act="preview">${state.previewMd ? "编辑" : "预览"}</button>` : ""}
+              <button class="btn tiny" data-act="save" ${state.dirty ? "" : "disabled"}>保存</button>
+            </div>
+            ${body}
+          </div>
+        </div>`;
+    }
+
+    function composerBox(opts) {
+      const { home } = opts;
+      const busy = state.busy;
+      const action = busy
+        ? `<button class="btn danger" data-act="stop">停止</button>`
+        : `<button class="btn" data-act="${home ? "start" : "send"}" ${state.draft.trim() ? "" : "disabled"}>${home ? "开始" : "发送"}</button>`;
+      return `<div class="composer">
+        <textarea id="draft" placeholder="${home ? "描述要测的改动，例如：分析这两个仓 feature 分支对创单的影响，并设计接口场景" : (busy ? "agent 运行中…" : "继续下发任务，Enter 发送")}">${esc(state.draft)}</textarea>
+        <div class="composer-foot">
+          ${home ? "" : `<button class="btn ghost tiny" data-act="toggle-files">${state.filesOpen ? "收起产物" : "产物"}</button>`}
+          <span class="hint">Enter 发送 · Shift+Enter 换行</span>
+          ${action}
+        </div>
+      </div>`;
+    }
+
+    function render() {
+      const dumpText = `view=${state.view} session=${state.currentId || "home"} files=${state.filesOpen}` ;
+
+      const threads = state.sessions.map((s) => `
+        <div class="thread ${state.currentId === s.id ? "on" : ""}" data-act="open" data-id="${s.id}">
+          <div class="t">${esc(s.title)}</div>
+          <div class="s">${statusLabel(s.status)} · ${s.repos.length} 个仓库</div>
+        </div>`).join("");
+
+      let stage = "";
+      if (state.view === "home" || !cur()) {
+        stage = `<div class="home">
+          <div class="home-col">
+            <div class="home-hero">
+              <h1>有什么想测的？</h1>
+              <div class="sub">选好仓库和对比分支，用一句话启动 agent</div>
+            </div>
+            ${repoEditor("homeRepos")}
+            <div class="composer-wrap">${composerBox({ home: true })}</div>
+          </div>
+        </div>`;
+      } else {
+        const s = cur();
+        stage = `
+          <div class="chat-top">
+            <div class="title">${esc(s.title)}</div>
+            <span class="status ${statusClass(s.status)}">${statusLabel(s.status)}</span>
+            ${pills(s.repos)}
+            <button class="btn ghost tiny" style="margin-left:auto" data-act="toggle-files">${state.filesOpen ? "收起产物" : "产物"}</button>
+          </div>
+          <div class="thread-view">${threadHtml()}</div>
+          <div class="dock-composer"><div class="composer-wrap">${composerBox({ home: false })}</div></div>`;
+      }
+
+      $("app").innerHTML = `<div class="app">
+        <header class="menubar">
+          <div class="brand"><span class="mark">测</span>智能测试平台</div>
+          <span class="current-app">接口测试</span>
+          <div class="who">
+            <input id="userName" value="${esc(state.userName)}" placeholder="用户名" />
+          </div>
+        </header>
+        <div class="body">
+          <aside class="side">
+            <button class="side-btn ${state.view === "home" ? "on" : ""}" data-act="new">＋ 新会话</button>
+            <h4>最近</h4>
+            <div class="threads">${threads}</div>
+            <div class="proto">${esc(dumpText)}</div>
+          </aside>
+          <div class="main ${state.filesOpen && state.view === "thread" ? "files" : ""}">
+            <section class="stage">${stage}</section>
+            <aside class="drawer">${state.filesOpen && state.view === "thread" ? filePane() : ""}</aside>
+          </div>
+        </div>
+      </div>`;
+
+      const d = $("draft");
+      if (d) {
+        d.addEventListener("input", (e) => { state.draft = e.target.value; });
+        d.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (state.view === "home") startSession();
+            else send();
+          }
+        });
+      }
+      const u = $("userName");
+      if (u) u.addEventListener("input", (e) => { state.userName = e.target.value; });
+      const fb = $("fileBody");
+      if (fb) {
+        fb.addEventListener("input", (e) => {
+          state.fileContents[state.selected] = e.target.value;
+          if (!state.dirty) {
+            state.dirty = true;
+            const save = document.querySelector("[data-act=save]");
+            if (save) save.disabled = false;
+            const bar = document.querySelector(".editor-bar .path");
+            if (bar && !document.querySelector(".dirty")) {
+              bar.insertAdjacentHTML("afterend", `<span class="dirty">未保存</span>`);
+            }
+          }
+        });
+      }
+      document.querySelectorAll("[data-repo]").forEach((el) => {
+        el.addEventListener("input", (e) => {
+          const { repo, i, k } = e.target.dataset;
+          state[repo][Number(i)][k] = e.target.value;
+        });
+      });
+    }
+
+    function validRepos(list) {
+      return list.filter((r) => r.url.trim() && r.feat.trim()).map((r) => ({
+        url: r.url.trim(), base: r.base.trim() || "master", feat: r.feat.trim(),
+      }));
+    }
+
+    function startSession() {
+      const repos = validRepos(state.homeRepos);
+      const text = state.draft.trim();
+      if (!repos.length || !text) return;
+      const id = "s" + Date.now();
+      const title = text.slice(0, 18) || repoName(repos[0].url);
+      state.sessions.unshift({ id, title, status: "cloning", repos });
+      state.currentId = id;
+      state.view = "thread";
+      state.messages = [{ role: "user", text }];
+      state.draft = "";
+      state.busy = true;
+      render();
+      setTimeout(() => {
+        const s = cur();
+        if (s) s.status = "running";
+        state.messages.push({
+          role: "asst",
+          thinking: `将并行准备 ${repos.length} 个仓库并对比分支。`,
+          thinkOpen: false,
+          tools: [{ name: "Skill", summary: "analyze-change-scenarios", open: false, body: repos.map((r) => `${r.url}\n  ${r.base} → ${r.feat}`).join("\n") }],
+          text: `已记下 ${repos.length} 个仓库的对比分支。接下来会按仓分别拉 diff，再汇总接口场景。（原型模拟）`,
+        });
+        state.busy = false;
+        if (s) s.status = "ready";
+        render();
+      }, 800);
+    }
+
+    function send() {
+      const t = state.draft.trim();
+      if (!t || state.busy || !cur()) return;
+      state.messages.push({ role: "user", text: t });
+      state.draft = "";
+      state.busy = true;
+      cur().status = "running";
+      render();
+      setTimeout(() => {
+        state.messages.push({ role: "asst", text: "（原型模拟回复）可以继续改场景、造 mock，或打开右侧产物看生成的用例。" });
+        state.busy = false;
+        cur().status = "ready";
+        render();
+      }, 600);
+    }
+
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest("[data-act]");
+      if (!t) return;
+      const act = t.dataset.act;
+      if (act === "new") {
+        state.view = "home";
+        state.currentId = null;
+        state.draft = "";
+        state.filesOpen = false;
+        if (!state.homeRepos.length) state.homeRepos = blankRepos();
+      }
+      if (act === "open") {
+        state.currentId = t.dataset.id;
+        state.view = "thread";
+        state.busy = cur()?.status === "running";
+        if (t.dataset.id === "s1" && !state.messages.length) {
+          state.messages = [
+            { role: "user", text: "分析这两个仓 feature 分支对创单的影响。" },
+            { role: "asst", thinkOpen: false, thinking: "先定位 createOrder 入口，再看支付超时回滚是否跨 pay-gateway。", tools: [{ name: "Skill", summary: "analyze-change-scenarios", open: false, body: "2 repos" }], text: "改动跨 order-svc 与 pay-gateway。建议覆盖支付超时回滚。" },
+          ];
+        }
+      }
+      if (act === "add-repo") state[t.dataset.key].push({ url: "", base: "master", feat: "" });
+      if (act === "rm-repo") {
+        const key = t.dataset.key;
+        if (state[key].length > 1) state[key].splice(Number(t.dataset.i), 1);
+      }
+      if (act === "start") startSession();
+      if (act === "send") send();
+      if (act === "stop") { state.busy = false; if (cur()) cur().status = "ready"; }
+      if (act === "toggle-files") state.filesOpen = !state.filesOpen;
+      if (act === "vscode") state.vscode = true;
+      if (act === "files-tab") state.vscode = false;
+      if (act === "open-file") {
+        state.selected = t.dataset.p;
+        state.vscode = false;
+        state.dirty = false;
+        state.previewMd = t.dataset.p.endsWith(".md");
+      }
+      if (act === "preview") state.previewMd = !state.previewMd;
+      if (act === "save") state.dirty = false;
+      if (act === "toggle-think") {
+        const last = [...state.messages].reverse().find((m) => m.thinking);
+        if (last) last.thinkOpen = !last.thinkOpen;
+      }
+      if (act === "toggle-tool") {
+        const last = [...state.messages].reverse().find((m) => m.tools);
+        const i = Number(t.dataset.i);
+        if (last?.tools[i]) last.tools[i].open = !last.tools[i].open;
+      }
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

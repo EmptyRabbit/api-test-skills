@@ -6,6 +6,9 @@
 > 上游：02-scenarios.md、03-mock-plan.md
 > 更新时间：YYYY-MM-DD HH:MM
 
+**一句话结论**：本批只有 S3 需要造数——DB 插一条 PAID 订单、发一条 order.paid 消息；
+S1 需要人工清一次 Redis 缓存。fixture 代码已写好，等你填好 `config.yaml` 里的库连接信息。
+
 # 框架数据准备方案
 
 本文件只覆盖 batch1 的场景。

@@ -1,0 +1,11 @@
+{
+  "name": "api-test",
+  "version": "1.0.0",
+  "description": "Java 接口测试用例生成：改动分析、场景设计、mock/框架造数、pytest 用例生成与执行修复",
+  "keywords": [
+    "api-test",
+    "pytest",
+    "java",
+    "skills"
+  ]
+}
