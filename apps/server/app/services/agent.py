@@ -7,8 +7,7 @@ from app.config import get_settings
 from app.db import MessageRow, SessionRow
 from app.services import mcp_oauth, workspace
 from app.services.bus import bus
-from app.services.claude_runtime import get_runtime
-from app.services.snapshots import take_snapshot
+from app.services.claude_runtime import get_runtime, resolve_model
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +29,10 @@ def build_system_prompt(s: SessionRow) -> str:
         "【本平台任务】\n"
         "本会话用于为当前仓库的代码改动生成接口自动化测试。"
         "只要用户要生成/设计/编写接口测试用例，或分析改动对接口的影响，"
-        "必须先用 Skill 工具读取并严格遵循 generate-api-tests（主编排）；"
-        "禁止跳过该 skill 自行写 pytest、禁止把 analyze-change-scenarios / "
-        "write-pytest-cases 等子 skill 当作入口。"
-        "已经处于该流程某阶段时，继续按 generate-api-tests 的阶段门执行，"
+        "必须先用 Skill 工具读取并严格遵循 api-generate-api-tests（主编排）；"
+        "禁止跳过该 skill 自行写 pytest、禁止把 api-analyze-change-scenarios / "
+        "api-write-pytest-cases 等子 skill 当作入口。"
+        "已经处于该流程某阶段时，继续按 api-generate-api-tests 的阶段门执行，"
         "每阶段产出 md 后暂停等用户确认。\n"
         "【平台环境信息】\n"
         f"- 代码仓库本地路径：{ws / 'repo'}（GitLab: {s.git_url}）\n"
@@ -41,7 +40,7 @@ def build_system_prompt(s: SessionRow) -> str:
         "（当前已 checkout feature）\n"
         f"- 产物目录：{ws / 'artifacts'}\n"
         f"- 当前用户：{s.user_name}\n"
-        "使用 generate-api-tests 收集输入时，以上路径/分支/产物目录直接采用，不要再向用户询问。"
+        "使用 api-generate-api-tests 收集输入时，以上路径/分支/产物目录直接采用，不要再向用户询问。"
     )
 
 
@@ -104,6 +103,7 @@ def build_agent_options(s: SessionRow, settings) -> dict:
     runtime = get_runtime()
     ws = workspace.workspace_root(s.id)
     runtime.install_session_files(ws)
+    model = resolve_model(runtime.spec, getattr(s, "model_name", None), getattr(s, "auth_token", None))
     kwargs = dict(
         cwd=str(ws),
         permission_mode=settings.permission_mode,
@@ -115,7 +115,7 @@ def build_agent_options(s: SessionRow, settings) -> dict:
         setting_sources=["user"],
         mcp_servers=mcp_oauth.mcp_servers_for_user(s.user_name),
         strict_mcp_config=True,
-        env=runtime.cli_env,
+        env=runtime.cli_env_for(model),
         plugins=[],
     )
     if settings.allowed_tools:
@@ -129,8 +129,8 @@ def build_agent_options(s: SessionRow, settings) -> dict:
             s.id,
             cid,
         )
-    if runtime.spec.model.name:
-        kwargs["model"] = runtime.spec.model.name
+    if model.name:
+        kwargs["model"] = model.name
     return kwargs
 
 
@@ -161,29 +161,9 @@ class _RunningClient:
 _running: dict[str, _RunningClient] = {}
 
 
-async def _persist_cli_session(session_id: str) -> None:
-    def read_id(s2):
-        row = s2.get(SessionRow, session_id)
-        return row.claude_session_id if row else None
-
-    cid = await db.run_db(read_id)
-    if not cid:
-        return
-    transcript, tasks = await asyncio.to_thread(get_runtime().dump_cli_session, cid)
-    if transcript is None and tasks is None:
-        return
-
-    def write(s2):
-        row = s2.get(SessionRow, session_id)
-        if not row:
-            return
-        if transcript is not None:
-            row.claude_transcript = transcript
-        if tasks is not None:
-            row.claude_tasks = tasks
-        s2.commit()
-
-    await db.run_db(write)
+def turn_active(session_id: str) -> bool:
+    """回合是否进行中：生命周期 409 判断的公开读法，不再让路由摸 _running。"""
+    return session_id in _running
 
 
 async def _drive_turn(
@@ -260,24 +240,14 @@ async def run_agent_turn(session_id: str, user_text: str, *, make_client=None) -
             await _once()
     except Exception as e:  # noqa: BLE001
         logger.exception("agent turn failed")
-        await bus.publish(session_id, {"type": "agent_error", "message": str(e)})
+        from app.services import lifecycle
+
+        await lifecycle.turn_failed(session_id, str(e))
     finally:
         _running.pop(session_id, None)
+        from app.services import lifecycle
 
-        def _ready(s2):
-            row = s2.get(SessionRow, session_id)
-            row.status = "ready"
-            s2.commit()
-
-        await db.run_db(_ready)
-        try:
-            await _persist_cli_session(session_id)
-        except Exception:  # noqa: BLE001
-            logger.exception("persist claude transcript failed")
-        try:
-            await take_snapshot(session_id, "agent_done")
-        except Exception:  # noqa: BLE001
-            logger.exception("snapshot after agent turn failed")
+        await lifecycle.turn_finished(session_id)
 
 
 async def stop_agent(session_id: str) -> bool:

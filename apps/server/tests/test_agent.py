@@ -48,7 +48,7 @@ def test_system_prompt_requires_generate_api_tests(tmp_path, monkeypatch):
         feature_branch="feature/x",
     )
     text = agent.build_system_prompt(s)
-    assert "generate-api-tests" in text
+    assert "api-generate-api-tests" in text
     assert "禁止跳过" in text
     assert str(tmp_path / "workspaces" / "s-prompt" / "repo") in text
     assert str(tmp_path / "workspaces" / "s-prompt" / "artifacts") in text

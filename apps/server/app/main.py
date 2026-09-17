@@ -11,6 +11,19 @@ def build_app(settings: Settings) -> FastAPI:
     prepare_runtime(settings)
     app = FastAPI(title="api-test-platform")
 
+    from fastapi.responses import JSONResponse
+
+    from app.services import lifecycle
+
+    @app.exception_handler(lifecycle.SessionNotFound)
+    async def _session_not_found(request, exc):
+        return JSONResponse(status_code=404, content={"detail": "session not found"})
+
+    @app.exception_handler(lifecycle.TurnConflict)
+    async def _turn_conflict(request, exc):
+        detail = exc.payload if exc.payload else str(exc)
+        return JSONResponse(status_code=409, content={"detail": detail})
+
     @app.get("/api/health")
     def health():
         from sqlalchemy import text
@@ -18,6 +31,13 @@ def build_app(settings: Settings) -> FastAPI:
         with db.SessionLocal() as s:
             s.execute(text("SELECT 1"))
         return {"status": "ok", "database": "connected"}
+
+    @app.get("/api/platform")
+    def platform():
+        from app.services.claude_runtime import get_runtime, public_models
+
+        spec = get_runtime().spec
+        return {"models": public_models(spec), "user_name": spec.user_name}
 
     from app.routers import sessions
 

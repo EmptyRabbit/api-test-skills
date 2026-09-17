@@ -1,5 +1,5 @@
 ---
-name: prepare-framework-data
+name: api-prepare-framework-data
 description: 为接口测试场景设计 DB、Redis、配置中心、消息中间件四类框架数据的准备方案，查清现状后给出造数代码与人工待办清单。当用户要造测试数据、准备数据库或缓存数据、改配置、发消息验证时使用。
 ---
 
@@ -16,14 +16,14 @@ description: 为接口测试场景设计 DB、Redis、配置中心、消息中�
 产物落到 `docs/batch<N>/04-framework-data.md`，状态头的阶段写成 `batch<N>/04-框架数据`。
 
 工具用法见 [TOOLS.md](TOOLS.md)，产物结构见 [TEMPLATE.md](TEMPLATE.md)，
-红线见 `../generate-api-tests/CONVENTIONS.md`。
+红线见 `../api-generate-api-tests/CONVENTIONS.md`。
 
 ## 关于工具
 
 本 skill 只讲**通用方法论**：现状核查、造数与清理、fixture 结构、人工待办清单。
 **具体查询工具**（数据库查询 MCP、配置中心查询 MCP、MQ 网关等）由 vendor 适配 skill 提供。
 
-如果本次运行的 vendor 提供了对应适配 skill（`prepare-framework-data-<vendor>`），
+如果本次运行的 vendor 提供了对应适配 skill（`api-prepare-framework-data-<vendor>`），
 主编排会先调本 skill 讲方法论，再调适配 skill 讲工具细节。
 
 ## 统一逻辑
@@ -67,5 +67,5 @@ description: 为接口测试场景设计 DB、Redis、配置中心、消息中�
 ## 收尾
 
 md 里必须有一份**人工待办清单**，汇总用户要亲自做的事：填 DB 连接信息、
-手动改配置中心、以及所有 agent 拿不到的信息。这份清单会被 `write-pytest-cases`
+手动改配置中心、以及所有 agent 拿不到的信息。这份清单会被 `api-write-pytest-cases`
 合并进最终的执行前置清单。

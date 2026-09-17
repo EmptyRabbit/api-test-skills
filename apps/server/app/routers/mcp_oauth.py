@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 from app.services import mcp_oauth
@@ -37,3 +37,11 @@ def device_poll(flow_id: str):
     if result.get("status") == "error" and result.get("error") == "unknown_flow":
         raise HTTPException(status_code=404, detail="unknown flow")
     return result
+
+
+@router.delete("/tokens/{server}")
+def revoke(server: str, user_name: str = Query(...)):
+    ok = mcp_oauth.revoke_token(_require_user(user_name), server)
+    if not ok:
+        raise HTTPException(status_code=404, detail="no token for server")
+    return {"ok": True}

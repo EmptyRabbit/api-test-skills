@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react';
+import { api } from './api/client';
 import DrawerResizer from './components/DrawerResizer';
 import ChatPanel from './components/ChatPanel';
 import FilePanel from './components/FilePanel';
@@ -22,6 +23,20 @@ export default function App() {
   useEffect(() => {
     if (userName) void loadSessions();
   }, [userName, loadSessions]);
+
+  useEffect(() => {
+    void api
+      .get<{ user_name?: string }>('/api/platform')
+      .then((body) => {
+        const fromYaml = (body.user_name || '').trim();
+        if (!fromYaml || useSessionStore.getState().userName.trim()) return;
+        setUserName(fromYaml);
+        setNameDraft(fromYaml);
+      })
+      .catch(() => {
+        /* 后端未就绪时仍可手填用户名 */
+      });
+  }, [setUserName]);
 
   useEffect(() => {
     if (!current) setFilesOpen(false);
@@ -51,8 +66,11 @@ export default function App() {
         <span className="current-app">接口测试</span>
         <div className="who">
           <input
+            id="platform-user-name"
             value={nameDraft}
-            placeholder="用户名"
+            placeholder="用户名（必填）"
+            required
+            aria-required="true"
             onChange={(e) => setNameDraft(e.target.value)}
             onBlur={commitName}
             onKeyDown={(e) => {
@@ -91,7 +109,7 @@ export default function App() {
                       writeDrawerWidth(w, sideW);
                     }}
                   />
-                  <FilePanel />
+                  <FilePanel onClose={() => setFilesOpen(false)} />
                 </>
               ) : null}
             </aside>

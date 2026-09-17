@@ -1,13 +1,9 @@
-import asyncio
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from app import db
 from app.db import MessageRow
-from app.routers.sessions import _get, _set_status
-from app.services import agent, mcp_oauth
-from app.services.bus import bus
+from app.services import agent, lifecycle
 
 router = APIRouter(prefix="/api/sessions", tags=["chat"])
 
@@ -18,7 +14,7 @@ class ChatIn(BaseModel):
 
 @router.get("/{sid}/messages")
 async def list_messages(sid: str):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
 
     def q(s):
         rows = (
@@ -36,36 +32,12 @@ async def list_messages(sid: str):
 
 @router.post("/{sid}/chat", status_code=202)
 async def chat(sid: str, body: ChatIn):
-    row = await db.run_db(lambda s: _get(s, sid))
-    if sid in agent._running:
-        raise HTTPException(status_code=409, detail="agent is running")
-    if row.status != "ready":
-        raise HTTPException(status_code=409, detail=f"session status is {row.status}")
-    missing = await asyncio.to_thread(mcp_oauth.missing_oauth_servers, row.user_name)
-    if missing:
-        raise HTTPException(
-            status_code=409,
-            detail={"code": "mcp_oauth_required", "servers": missing},
-        )
-
-    await db.run_db(_set_status(sid, "running"))
-    await bus.publish(
-        sid,
-        {
-            "type": "agent_message",
-            "role": "user",
-            "blocks": [{"kind": "text", "text": body.text}],
-        },
-    )
-    await agent.save_message(sid, "user", [{"kind": "text", "text": body.text}])
-    asyncio.get_running_loop().create_task(
-        agent.run_agent_turn(sid, body.text)
-    )
+    await lifecycle.begin_turn(sid, body.text)
     return {"ok": True}
 
 
 @router.post("/{sid}/stop")
 async def stop(sid: str):
-    await db.run_db(lambda s: _get(s, sid))
+    await lifecycle.get_session(sid)
     stopped = await agent.stop_agent(sid)
     return {"stopped": stopped}

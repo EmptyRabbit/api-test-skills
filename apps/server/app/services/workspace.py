@@ -83,12 +83,6 @@ def _http_prefix(git_url: str) -> str | None:
     return f"{parts.scheme}://{_http_host(parts)}/"
 
 
-def _git_auth() -> tuple[str | None, str]:
-    from app.services.claude_runtime import current_git_auth
-
-    return current_git_auth()
-
-
 async def _git(
     args: list[str], cwd: Path | None = None, *, redact: tuple[str, ...] = ()
 ) -> str:
@@ -113,9 +107,16 @@ async def _git(
     return text
 
 
-async def clone_repo(git_url: str, feature_branch: str, dest: Path) -> None:
+async def clone_repo(
+    git_url: str,
+    feature_branch: str,
+    dest: Path,
+    *,
+    token: str | None = None,
+    username: str = "oauth2",
+) -> None:
+    """凭据由调用方显式注入；不传 token 则按无凭据 clone（本地/SSH 地址）。"""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    token, username = _git_auth()
     secrets = (token,) if token else ()
     clone_url = inject_git_token(git_url, token, username)
     await _git(
@@ -135,7 +136,11 @@ async def clone_repo(git_url: str, feature_branch: str, dest: Path) -> None:
 
 
 async def ensure_workspace(
-    session: SessionRow, restore_artifacts=None
+    session: SessionRow,
+    restore_artifacts=None,
+    *,
+    token: str | None = None,
+    username: str = "oauth2",
 ) -> None:
     """repo 缺失重 clone；artifacts 缺失/为空时用 restore_artifacts(sid) 回填。"""
     sid = session.id
@@ -143,7 +148,9 @@ async def ensure_workspace(
     if not (repo / ".git").exists():
         if repo.exists():
             _rmtree(repo)
-        await clone_repo(session.git_url, session.feature_branch, repo)
+        await clone_repo(
+            session.git_url, session.feature_branch, repo, token=token, username=username
+        )
 
     art = artifacts_dir(sid)
     art.mkdir(parents=True, exist_ok=True)

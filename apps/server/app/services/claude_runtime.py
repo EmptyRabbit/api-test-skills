@@ -87,6 +87,42 @@ def _model_env(m) -> dict[str, str]:
     return env
 
 
+def public_models(spec: PlatformFile) -> list[dict[str, str | bool | None]]:
+    items = spec.models or ([spec.model] if spec.model.name else [])
+    return [
+        {
+            "name": m.name,
+            "label": m.label or m.name,
+            "default": bool(m.default) if spec.models else True,
+        }
+        for m in items
+        if m.name
+    ]
+
+
+def resolve_model(spec: PlatformFile, name: str | None = None, auth_token: str | None = None):
+    from app.platform_config import ModelConfig
+
+    items = spec.models or ([spec.model] if spec.model.name or spec.model.base_url else [])
+    chosen = spec.model
+    wanted = (name or "").strip()
+    if wanted:
+        match = next((m for m in items if m.name == wanted), None)
+        if match is None:
+            raise PlatformConfigError(f"未知模型: {wanted}")
+        chosen = match
+    elif items:
+        chosen = next((m for m in items if m.default), items[0])
+    token = (auth_token or "").strip() or chosen.auth_token
+    return ModelConfig(
+        name=chosen.name,
+        base_url=chosen.base_url,
+        auth_token=token,
+        label=chosen.label,
+        default=chosen.default,
+    )
+
+
 class ClaudeRuntime:
     def __init__(self, spec: PlatformFile):
         self.spec = spec
@@ -95,9 +131,8 @@ class ClaudeRuntime:
     def mcp_servers(self) -> dict:
         return self.spec.mcp_servers
 
-    @property
-    def cli_env(self) -> dict[str, str]:
-        m = self.spec.model
+    def cli_env_for(self, model=None) -> dict[str, str]:
+        m = model or self.spec.model
         env = {
             "CLAUDE_CONFIG_DIR": str(self.spec.claude_home),
             **_model_env(m),
@@ -107,6 +142,10 @@ class ClaudeRuntime:
         if os.name != "nt":
             env["HOME"] = str(self.spec.claude_home)
         return env
+
+    @property
+    def cli_env(self) -> dict[str, str]:
+        return self.cli_env_for()
 
     def _vendor_yaml(self) -> str:
         return yaml.safe_dump({"vendor": self.spec.vendor}, allow_unicode=True)

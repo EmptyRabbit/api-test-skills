@@ -5,7 +5,7 @@
 # 独立 Claude Home，不使用本机 ~/.claude
 claude_home: ./data/claude-home
 
-# generate-api-tests 的 vendor；none 表示只用核心 skill
+# api-generate-api-tests 的 vendor；none 表示只用核心 skill
 vendor: none
 
 # 每个目录下含 SKILL.md 的子目录都会链到 claude_home/skills/
@@ -24,16 +24,25 @@ mcp_servers: {}
 #   headers:
 #     X-Api-Key: ${EXAMPLE_MCP_TOKEN}
 
+# 侧栏默认用户名。未配置时也可写 git.username（oauth2 除外）；都没有则启动页必填。
+# user_name: alice
+
 # 与侧栏用户名对齐时读取的 userinfo 字段（默认 OpenID：email / mail / preferred_username / sub / name）
 # oauth:
 #   identity_claims:
 #     - email
 #     - preferred_username
 
-# model:
-#   name: ${ANTHROPIC_CUSTOM_MODEL_OPTION}
-#   base_url: ${ANTHROPIC_BASE_URL}
-#   auth_token: ${ANTHROPIC_AUTH_TOKEN}
+# model: 仍可用单个 mapping（兼容旧配置）。推荐用 models 列表，并标 default: true。
+# models:
+#   - name: ${ANTHROPIC_CUSTOM_MODEL_OPTION}
+#     label: glm-5.3
+#     default: true
+#     base_url: ${ANTHROPIC_BASE_URL}
+#     auth_token: ${ANTHROPIC_AUTH_TOKEN}
+#   - name: another-model
+#     base_url: ${ANTHROPIC_BASE_URL}
+#     auth_token: ${ANTHROPIC_AUTH_TOKEN}
 
 # 被测仓库 git clone 用。只改写 http(s) 地址，工作区用 insteadOf 记住凭证，
 # 不写进会话的 git_url。未配置则仍走机器上的 Git 凭据。

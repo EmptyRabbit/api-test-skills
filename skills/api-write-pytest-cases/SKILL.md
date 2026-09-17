@@ -1,5 +1,5 @@
 ---
-name: write-pytest-cases
+name: api-write-pytest-cases
 description: 依据测试场景、mock 方案和框架数据方案，基于 template 模板生成 pytest 接口自动化测试工程与用例代码。当用户要生成接口测试代码、把测试场景落成 pytest 用例时使用。
 ---
 
@@ -10,7 +10,7 @@ description: 依据测试场景、mock 方案和框架数据方案，基于 temp
 `05-case-design.md`。
 
 代码风格及详细规则见 [STYLE.md](STYLE.md)，产物结构见 [TEMPLATE.md](TEMPLATE.md)，
-红线见 `../generate-api-tests/CONVENTIONS.md`。
+红线见 `../api-generate-api-tests/CONVENTIONS.md`。
 
 ## 批次范围
 
@@ -24,9 +24,10 @@ description: 依据测试场景、mock 方案和框架数据方案，基于 temp
 
 把 `template/` 下的 `frame/`、`conftest.py`、`config.yaml`、`requirements.txt`、`.gitignore`
 复制到产物目录，按需要用到的能力填 `config.yaml`：DB 连接（用户提供）、Redis 集群名、
-appid / 环境 / Pod IP。用不到的配置项删掉，不要留一堆模板占位。
+appid / Pod IP。用不到的配置项删掉，不要留一堆模板占位。
 
-环境常量落到 `tests/env_config.py`（模板里有示例），填成本次被测的真实值。
+环境常量落到 `tests/env_config.py`（模板里有示例）：必填项填本次被测的真实值；
+发布环境（`ENV_NAME`）用户给了再填，没给就不要编一个。
 
 `logs/` 不用手动建，跑用例时自动生成，已在 `.gitignore` 里忽略。
 
@@ -50,10 +51,8 @@ appid / 环境 / Pod IP。用不到的配置项删掉，不要留一堆模板占
   业务语义描述预期结果，尾部括号标注「对应 Sx，改动点 Cy」做追溯，
   **不要把 ID 顶到首行**；**步骤**编号列出跨系统动作（接口调用、DB SQL、
   Redis 函数+参数、MQ 收发），格式与写法见 STYLE.md 的「用例注释」；
-- **所有响应断言统一走 jsonpath**（`jsonpath-ng`），禁止 `resp["a"]["b"]` 链式取值；
-  通用工具从 `frame.jsonpath_utils` 引入（`jp` / `jp_all` / `assert_jp` / `load_json_field`），
-  不要在用例文件里重复定义；遇到 `resultJson` 这类 string 化 JSON 字段用
-  `load_json_field` 解开再走 jsonpath，详见 STYLE.md 的「断言：统一走 jsonpath」；
+- **所有响应断言统一走 jsonpath**，禁止链式取值，规则和工具函数见下方「断言纪律」
+  及 STYLE.md 的「断言：统一走 jsonpath」；
 - 需要造数的场景通过 `conftest.py` 的 fixture 拿数据，fixture 在 `yield` 后清理动态数据；
 - 仅入参不同的同构场景用 `parametrize` 合并，参数里带场景 ID；
 - 业务型 helper（`_invoke`、`_assert_xxx`）只在同文件内两个以上场景复用时才抽，

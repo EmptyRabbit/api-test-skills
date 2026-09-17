@@ -1,6 +1,6 @@
 ---
-name: generate-api-tests
-description: 针对 Java 服务的代码改动生成 pytest 接口自动化测试用例的主流程，按阶段编排改动分析、场景设计、mock 与框架造数、用例生成、执行修复，每阶段暂停等用户确认。当用户要为某次代码改动测试接口、生成接口自动化用例、或提到被测 operation 加两个分支时使用。
+name: api-generate-api-tests
+description: 针对 Java 服务的代码改动，编排从改动分析到用例执行的接口自动化测试端到端主流程，每阶段停下等用户确认。当用户要为某次代码改动生成接口自动化测试用例、跑通完整链路，或提到被测 operation 加了分支需要测试时使用；只需要单个阶段（如只要 mock 方案）时改用对应子 skill。
 ---
 
 # 接口测试用例生成（主流程）
@@ -37,12 +37,11 @@ npx api-test-skills status
 不要让他手工 echo 写文件。
 
 读到 vendor（非 none）后，阶段 3、4、5 各自追加调用对应的 `-<vendor>` 适配 skill
-（完整映射见下面「阶段流水线」表）：先调核心 skill 讲方法论，再调适配 skill 讲工具细节，
-两者共同产出该阶段的 md。
+（映射见下面「阶段流水线」表，调用顺序见「逐阶段调度」）。
 
 如果 vendor 声明为某个具体名字但对应的适配 skill 未安装，主编排必须**停下报错**：
 
-> vendor=`<vendor-name>` 但未找到 `prepare-mock-data-<vendor-name>` skill，请检查安装。
+> vendor=`<vendor-name>` 但未找到 `api-prepare-mock-data-<vendor-name>` skill，请检查安装。
 
 不静默降级到纯核心。
 
@@ -51,21 +50,29 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 
 ## 阶段流水线
 
-阶段 1、2 全量做一次；阶段 3 到 6 按批次循环。
+阶段 1 全量做一次；阶段 2 的场景设计内部也按批次分段产出和确认，最终形成一份覆盖
+全部批次的 `02-scenarios.md`；阶段 3 到 6 按批次循环。
 
 | 阶段 | 核心子 skill | vendor 适配（若有） | 产出 | 粒度 |
 |---|---|---|---|---|
 | 1 | 本 skill 收集输入 | — | `docs/00-context.md` | 全量 |
-| 2 | `analyze-change-scenarios` | — | `docs/01-change-analysis.md`、`docs/02-scenarios.md` | 全量 |
-| 3 | `prepare-mock-data` | `prepare-mock-data-<vendor>` | `docs/batch<N>/03-mock-plan.md` | 按批 |
-| 4 | `prepare-framework-data` | `prepare-framework-data-<vendor>` | `docs/batch<N>/04-framework-data.md` | 按批 |
-| 5 | `write-pytest-cases` | `write-pytest-cases-<vendor>` | 用例代码、`docs/batch<N>/05-case-design.md` | 按批 |
-| 6 | `run-and-fix-tests` | — | `docs/batch<N>/06-run-report.md` | 按批 |
+| 2 | `api-analyze-change-scenarios` | — | `docs/01-change-analysis.md`、`docs/02-scenarios.md` | 01 全量；02 按批次分段产出，最终全量 |
+| 3 | `api-prepare-mock-data` | `api-prepare-mock-data-<vendor>` | `docs/batch<N>/03-mock-plan.md` | 按批 |
+| 4 | `api-prepare-framework-data` | `api-prepare-framework-data-<vendor>` | `docs/batch<N>/04-framework-data.md` | 按批 |
+| 5 | `api-write-pytest-cases` | `api-write-pytest-cases-<vendor>` | 用例代码、`docs/batch<N>/05-case-design.md` | 按批 |
+| 6 | `api-run-and-fix-tests` | — | `docs/batch<N>/06-run-report.md` | 按批 |
 
 ```
 阶段 1 收集输入            ── 全量，一次
-阶段 2 改动分析与场景设计    ── 全量，一次，产出含「批次」列的场景清单
+阶段 2-a 改动分析           ── 全量，一次
+阶段 2-b 场景设计（按批次分段产出，先定骨架再逐批展开）
+  先出批次骨架（场景总览表 + 批次安排）→ 暂停确认
   ┌── 对每个批次循环 ──────────────────┐
+  │ 展开本批次场景详情（预期产出表）      │
+  │ 追加进 02-scenarios.md → 暂停确认    │
+  └────────────────────────────────┘
+  全部批次确认后，02-scenarios.md 状态改「已确认」
+  ┌── 对每个批次循环（阶段 3-6）──────────┐
   │ 阶段 3 mock 方案（仅本批次场景）      │
   │ 阶段 4 框架造数（仅本批次场景）        │
   │ 阶段 5 用例生成（仅本批次场景）        │
@@ -74,11 +81,13 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
   └────────────────────────────────┘
 ```
 
-批次划分在阶段 2 完成，规则见 `analyze-change-scenarios`。要点：**batch1 固定是主流程
-（冒烟，1–5 条场景），剩余场景默认全部塞进 batch2，只有超过 30 条才继续拆**。
+批次划分和逐批展开的规则见 `api-analyze-change-scenarios`。要点：**batch1 固定是主流程
+（冒烟，1–5 条场景），剩余场景默认全部塞进 batch2，只有超过 30 条才继续拆**；场景
+详情按批次逐一展开并确认，不因为"内容不多""想省几轮来回"就提前把未确认批次的
+详情一起写出来——除非用户明确要求不分批或明确要求把所有批次细节一次写完。
 
-**用户明确要求不分批时**退化为单批：主流程和其他场景全部归 batch1，目录结构不变。
-除此之外不要自作主张跳过分批或多拆批次。
+**用户明确要求不分批时**退化为单批：主流程和其他场景全部归 batch1，阶段 2-b 不再
+逐批展开，目录结构不变。除此之外不要自作主张跳过分批或多拆批次。
 
 ## 流程
 
@@ -92,13 +101,13 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 | 项 | 必填 | 说明 |
 |---|---|---|
 | operation 名 | 必填 | 被测接口，如 `api/testProcessorChain` |
-| 发布环境 | 必填 | 如 `fat0` |
 | Pod IP | 必填 | 直连指定实例，避免打到未部署新代码的节点；格式如 `10.32.xxx.xxx` |
 | 代码仓库本地路径 | 必填 | 不在本地时请用户自行 clone，不要代劳；必须是本机可访问的绝对路径 |
 | base 分支 | 必填 | 用于 diff，如 `master` |
 | feature 分支 | 必填 | 用于 diff，如 `feature/xxx` |
 | 产物目录 | 必填 | 生成物落地位置 |
-| appid | vendor 相关 | 有应用编号体系的 vendor 下必填；vendor=none 时不需要 |
+| appid | 可选 | 有则写入；用户没给不要追问，也不要当成缺失必填项 |
+| 发布环境 | 可选 | 如 `fat0`；用户没给就不要追问，也不要按 Pod IP 推断 |
 | 相关文档 | 可选 | 飞书链接 / 本地 md / 口头描述，可为空 |
 
 **必填项缺失处理（红线）**：
@@ -123,21 +132,20 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 > 上游：无
 > 更新时间：2026-09-16 18:40
 
-**一句话结论**：必填项已收集齐，vendor=xxx；发布环境是按 Pod IP 推断的，待你确认。
+**一句话结论**：必填项已收集齐，vendor=xxx。
 
 ## 输入
 
 - operation：`api/testProcessorChain`
-- 发布环境：fat0
 - Pod IP：10.119.251.23
 - 仓库：`/path/to/repo`（base=master → feature=feature/xxx）
-- appid：xxx（vendor 相关，vendor=none 时省略这行）
+- appid：xxx（用户给了才写，没给就省略这行）
 - 产物目录：`myapp/tests/generated`
 - 相关文档：飞书链接 / 无
 
 ## 待确认
 
-- [ ] 发布环境未直接提供，按 Pod IP 网段推断为 fat，请确认是否准确。
+无
 ```
 
 只有真正靠推断而非用户明确给出的项，才单独写进「待确认」；不要为每一项都标注
@@ -147,6 +155,10 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 
 每次被调用时，先扫 `<产物目录>/docs/` 根目录和各 `docs/batch<N>/` 子目录下 md 的状态头，
 向用户报告进度，格式是「第 N 批的第 M 阶段」。从第一个非 `已确认` 的阶段继续，不要重头再来。
+
+`docs/02-scenarios.md` 顶层状态为 `待确认` 时，看它状态头的**批次进度**行判断续跑
+位置：骨架未确认就先确认骨架；骨架已确认但某批次标「待确认」就继续展开或等该批次
+确认；所有批次都标「已确认」了才把顶层状态改成 `已确认`，进入阶段 3。
 
 判断当前批次的方法：批次号最大的那个 `docs/batch<N>/` 目录就是进行中的批次；
 它下面 `06-run-report.md` 已确认，说明该批次做完了，下一步是开新批次。
@@ -176,13 +188,14 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 
 ## 暂停点纪律
 
-暂停不是走过场。每次暂停按下面三句话向用户汇报，不要复述整份 md：
+暂停不是走过场。每次暂停按下面三块向用户汇报（对话里写成 `##` 标题，对照信息用表格），
+不要复述整份 md：
 
 1. **这一步做完了什么**：一两句结论。例："改动集中在空城市兜底分支，围绕它设了 6 条场景。"
-2. **还欠什么**：存疑点，逐条列，让用户知道回答哪些他就能放行。
-3. **需要他做什么**：人工动作，比如"去 mock 平台配 CASE-01/02 并把 CaseId 填回 md 顶部"。
+2. **还欠什么**：存疑点逐条编号；没有就写「无」。
+3. **需要他做什么**：人工动作，比如去 mock 平台配 CASE-01/02 并把 CaseId 填回 md。
 
-三句话讲完就停，等用户回复。他没明确说"可以进下一步"或者直接改 md 之前，不要往前走。
+三块讲完就停，等用户回复。他没明确说"可以进下一步"或者直接改 md 之前，不要往前走。
 
 **反面示范**（不要这样写）：
 

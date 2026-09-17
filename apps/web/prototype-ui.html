@@ -521,7 +521,7 @@
           role: "asst",
           thinking: `将并行准备 ${repos.length} 个仓库并对比分支。`,
           thinkOpen: false,
-          tools: [{ name: "Skill", summary: "analyze-change-scenarios", open: false, body: repos.map((r) => `${r.url}\n  ${r.base} → ${r.feat}`).join("\n") }],
+          tools: [{ name: "Skill", summary: "api-analyze-change-scenarios", open: false, body: repos.map((r) => `${r.url}\n  ${r.base} → ${r.feat}`).join("\n") }],
           text: `已记下 ${repos.length} 个仓库的对比分支。接下来会按仓分别拉 diff，再汇总接口场景。（原型模拟）`,
         });
         state.busy = false;
@@ -564,7 +564,7 @@
         if (t.dataset.id === "s1" && !state.messages.length) {
           state.messages = [
             { role: "user", text: "分析这两个仓 feature 分支对创单的影响。" },
-            { role: "asst", thinkOpen: false, thinking: "先定位 createOrder 入口，再看支付超时回滚是否跨 pay-gateway。", tools: [{ name: "Skill", summary: "analyze-change-scenarios", open: false, body: "2 repos" }], text: "改动跨 order-svc 与 pay-gateway。建议覆盖支付超时回滚。" },
+            { role: "asst", thinkOpen: false, thinking: "先定位 createOrder 入口，再看支付超时回滚是否跨 pay-gateway。", tools: [{ name: "Skill", summary: "api-analyze-change-scenarios", open: false, body: "2 repos" }], text: "改动跨 order-svc 与 pay-gateway。建议覆盖支付超时回滚。" },
           ];
         }
       }

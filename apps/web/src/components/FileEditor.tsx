@@ -51,7 +51,7 @@ export default function FileEditor() {
             language={langOf(selected)}
             value={openedContent}
             onChange={(v) => setContent(v ?? '')}
-            options={{ minimap: { enabled: false }, wordWrap: 'on', fontSize: 13 }}
+            options={{ minimap: { enabled: false }, wordWrap: 'on', fontSize: 14 }}
             onMount={(editor, monaco) => {
               editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, save);
             }}

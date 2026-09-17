@@ -68,5 +68,19 @@ export function mergeToolResults(messages: ChatMessage[]): ChatMessage[] {
       out.push(m);
     }
   }
+  return collapseAssistantTurns(out);
+}
+
+/** 同一轮里 SDK 会拆成多条 assistant，合并后工具才能收成「已运行 N 条命令」。 */
+function collapseAssistantTurns(messages: ChatMessage[]): ChatMessage[] {
+  const out: ChatMessage[] = [];
+  for (const m of messages) {
+    const prev = out[out.length - 1];
+    if (m.role === 'assistant' && prev?.role === 'assistant') {
+      out[out.length - 1] = { ...prev, blocks: [...prev.blocks, ...m.blocks] };
+    } else {
+      out.push(m);
+    }
+  }
   return out;
 }

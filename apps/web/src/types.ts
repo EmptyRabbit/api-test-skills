@@ -7,6 +7,7 @@ export interface SessionInfo {
   title: string;
   status: 'cloning' | 'ready' | 'running' | 'error' | 'restoring';
   error: string;
+  model_name?: string;
   created_at: string;
 }
 

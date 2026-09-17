@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 import yaml
 from fastapi.testclient import TestClient
 
@@ -276,3 +278,57 @@ def test_clears_needs_auth_cache(tmp_path):
     import json
 
     assert json.loads(cache.read_text(encoding="utf-8")) == {"plain-mcp": {"timestamp": 2}}
+
+
+def test_as_cache_ttl_expiry():
+    stale = mcp_oauth._AsCache(ttl=timedelta(0))
+    stale.put("k", {"issuer": "https://as.example"})
+    assert stale.get("k") is None  # ttl=0 立即过期
+
+    fresh = mcp_oauth._AsCache(ttl=timedelta(hours=1))
+    fresh.put("k", {"issuer": "https://as.example"})
+    assert fresh.get("k") == {"issuer": "https://as.example"}
+    fresh.clear()
+    assert fresh.get("k") is None
+
+
+def test_start_device_flow_sweeps_expired_flows(monkeypatch):
+    _stub_device_start(monkeypatch)
+    past = datetime.now(timezone.utc) - timedelta(seconds=1)
+    with mcp_oauth._lock:
+        mcp_oauth._flows["stale-flow"] = {"user_name": "bob", "expires_at": past}
+    started = mcp_oauth.start_device_flow("alice", "oauth-mcp")
+    assert "stale-flow" not in mcp_oauth._flows
+    assert started["user_code"] == "ABCD-EFGH"
+    with mcp_oauth._lock:
+        mcp_oauth._flows.pop(started["flow_id"], None)
+
+
+def test_revoke_token_roundtrip(settings, monkeypatch):
+    from app import db as db_mod
+    from app.main import build_app
+
+    monkeypatch.setattr("app.services.workspace._data_dir", settings.data_dir)
+    db_mod.init_engine(settings.database_url, settings.data_dir)
+    with db_mod.SessionLocal() as s:
+        s.add(
+            mcp_oauth.McpOAuthTokenRow(
+                user_name="alice",
+                server_name="oauth-mcp",
+                access_token="at",
+                refresh_token="rt",
+            )
+        )
+        s.commit()
+    _stub_device_start(monkeypatch)
+    client = TestClient(build_app(settings))
+    st = client.get("/api/mcp-login/status", params={"user_name": "alice"}).json()
+    assert st["servers"][0]["authorized"] is True
+
+    resp = client.delete("/api/mcp-login/tokens/oauth-mcp", params={"user_name": "alice"})
+    assert resp.status_code == 200
+    st = client.get("/api/mcp-login/status", params={"user_name": "alice"}).json()
+    assert st["servers"][0]["authorized"] is False
+
+    resp = client.delete("/api/mcp-login/tokens/oauth-mcp", params={"user_name": "alice"})
+    assert resp.status_code == 404
