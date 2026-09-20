@@ -1,0 +1,251 @@
+skills/api-prepare-framework-data/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2
+apps/web/src/orchestrator.test.ts
+  s_94e82681f78b76::t_ad80d45d368e3f 1-17
+apps/server/app/services/lifecycle.py
+  s_9435bd35165a9a::t_355ab7f1240d4e 4
+  s_5f8b520f657223::t_87d1c817be8c94 1-3,5-186
+apps/web/src/components/ToolCard.tsx
+  s_94e82681f78b76::t_6017f9fc8114d3 40,114
+  s_94e82681f78b76::t_78ea68f9c76dba 4
+  s_94e82681f78b76::t_c3ac95f7d3ba85 75-100
+  s_94e82681f78b76::t_87eda19662ff85 3,13-39,73
+  s_94e82681f78b76::t_a94adddb455754 9-12,41-72,101-110,118,122-128
+apps/server/tests/test_agent.py
+  s_e4a8d97d60e061::t_6e4f16de8edabb 51
+apps/web/src/mergeChat.test.ts
+  s_e4a8d97d60e061::t_6e4f16de8edabb 10,41-58,64
+skills/api-generate-api-tests/CONVENTIONS.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 41
+apps/web/src/orchestrator.ts
+  s_94e82681f78b76::t_0616d3fac03a71 1,3-18
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2
+apps/web/src/components/FilePanel.tsx
+  s_896018e7a53396::t_967a844a2bb979 10,12-27,42-43,46-50,64-67
+  s_0218bc5dd7e492::t_15b58d2c904fd2 11,28-31,76
+  s_c621cae1e49b8d::t_635d1265fccbcb 32
+apps/web/src/stores/session.ts
+  s_c621cae1e49b8d::t_908bdffe823f01 16-17
+apps/server/app/main.py
+  s_5f8b520f657223::t_48f12eb7129904 22-28
+apps/web/src/styles.css
+  s_c621cae1e49b8d::t_7d0cb11073a741 511
+  s_c621cae1e49b8d::t_f30e369dcb01c4 156
+  s_94e82681f78b76::t_912e8af27fb894 365-366,370
+  s_c621cae1e49b8d::t_a4e9213c844f26 144,151-152
+  s_94e82681f78b76::t_8841aab7b5380d 331,335-336,339
+  s_c621cae1e49b8d::t_79044fd5340cf5 193,199,202
+  s_94e82681f78b76::t_8514555c7e96c1 385-386,389-391,402-407,417-419
+  s_94e82681f78b76::t_34fed0f2a3168d 446-452,455-472
+  s_94e82681f78b76::t_303fffd4a3c249 382,410,414
+  s_94e82681f78b76::t_6c705118ed22c9 377-381,392-400,408-409,411-412,427-443,453-454
+  s_c621cae1e49b8d::t_d7925cf6549ffe 214-225
+  s_94e82681f78b76::t_055937947684df 7-10,14-15
+  s_c621cae1e49b8d::t_f4261b091ec44d 550
+  s_0218bc5dd7e492::t_9699b1fc353f73 539-543
+  s_534f42248c13e6::t_a1fecb372621b3 252
+  s_896018e7a53396::t_9cb193f1a6cfa5 490-491
+  s_534f42248c13e6::t_b1eb5a9eb42a22 250-251
+apps/server/platform.yaml.example
+  s_e4a8d97d60e061::t_6e4f16de8edabb 8
+  s_c621cae1e49b8d::t_a375bab704b6a8 33-42
+apps/web/src/components/HomePanel.test.tsx
+  s_c621cae1e49b8d::t_d0ca3bb9bf3f1b 1-68,70-73
+  s_c621cae1e49b8d::t_b19361c4395a11 69
+skills/api-generate-api-tests/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2-3
+apps/server/app/services/claude_runtime.py
+  s_c621cae1e49b8d::t_a096738b9111ae 134-135,146-148
+apps/server/app/platform_config.py
+  s_c621cae1e49b8d::t_50226f2d2129aa 144-197
+  s_c621cae1e49b8d::t_e3198289099782 250,259
+  s_c621cae1e49b8d::t_6e6bd5cb24556a 29-30
+  s_5f8b520f657223::t_7e79e067198b4d 59
+apps/server/tests/test_sessions_api.py
+  s_5f8b520f657223::t_0da98c31f34ca9 52,77,99,109
+  s_c621cae1e49b8d::t_ed6f8c3a505663 136-181
+apps/web/src/components/MessageItem.tsx
+  s_94e82681f78b76::t_7a78b06594e34a 1
+  s_94e82681f78b76::t_5133939e152605 29
+  s_94e82681f78b76::t_ddb291684425b0 3,5,10-11,13-14,17,19-20,28,30,32-38,72-73,76-82,92
+  s_94e82681f78b76::t_13b5fd0bc0730d 7,39-61,63,66-69,74-75
+  s_94e82681f78b76::t_fa462a1e3d75b4 31,64-65,70-71
+  s_94e82681f78b76::t_d6fb4ad8cf9e9a 62
+apps/web/src/components/FilePanel.test.tsx
+  s_0218bc5dd7e492::t_64a11e0b94b6be 1-42
+skills/api-run-and-fix-tests/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2
+apps/web/src/components/HomePanel.tsx
+  s_e4a8d97d60e061::t_6e4f16de8edabb 160
+  s_c621cae1e49b8d::t_d960df4736633d 1-2,8-9,11,22-24,29-41,52-53,58-59,83-113
+  s_94e82681f78b76::t_61ad1a078ca7ea 3
+apps/web/src/components/MarkdownBody.css
+  s_c621cae1e49b8d::t_cc5df7942cd27f 19
+  s_94e82681f78b76::t_e7f6bd20e00dfa 1,3-5,18,20-23,27,29-31,35-39,43,45-46,50,55-56,60-70,74-77,81,83,88-90,92,96,98,106,108,111-112,123-124,131,137-139,150,155-157,164-173,176,180,194-195
+  s_c621cae1e49b8d::t_401fa1942a55e2 28
+  s_c621cae1e49b8d::t_0bcffdc420fdaf 146
+  s_c621cae1e49b8d::t_9b6ec421940bcc 44
+  s_c621cae1e49b8d::t_db3debc5f6f851 119
+skills/api-write-pytest-cases/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2
+apps/server/tests/test_health.py
+  s_c621cae1e49b8d::t_4864b213994ae7 12-20
+apps/server/app/routers/sessions.py
+  s_c621cae1e49b8d::t_cb3098970c7a6a 47
+  s_c621cae1e49b8d::t_60b33ec7623318 20-21
+  s_5f8b520f657223::t_48f12eb7129904 33
+  s_c621cae1e49b8d::t_02d3563421ede5 111-118,130-131
+apps/server/app/db.py
+  s_c621cae1e49b8d::t_5790d88f48eac3 123-124
+  s_5f8b520f657223::t_7e79e067198b4d 45-46
+apps/web/src/types.ts
+  s_c621cae1e49b8d::t_06782ba6ea4973 10
+skills/api-analyze-change-scenarios/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2,4,9,30,44-45,62,64-66,69,71,73-75,83-151
+apps/web/src/components/MarkdownWysiwyg.css
+  s_c621cae1e49b8d::t_784e07915355c6 51
+  s_94e82681f78b76::t_3ff3681be6615d 15-50,52-56
+package.json
+  s_e4a8d97d60e061::t_6e4f16de8edabb 4
+tests/conftest.py
+  s_e4a8d97d60e061::t_6e4f16de8edabb 3,12
+apps/web/src/components/MessageItem.test.tsx
+  s_94e82681f78b76::t_2f4447c4b09268 107-108
+  s_94e82681f78b76::t_ed9bc384e679ec 21
+  s_94e82681f78b76::t_a1570aa4c12e50 88
+  s_94e82681f78b76::t_664d4fddeee6d9 86
+  s_94e82681f78b76::t_5071a73b1f9c77 92-99,101-106
+  s_e4a8d97d60e061::t_6e4f16de8edabb 75,100
+  s_94e82681f78b76::t_af99756d7ff758 37-56
+apps/web/prototype-ui.html
+  s_e4a8d97d60e061::t_6e4f16de8edabb 524,567
+apps/web/src/mergeChat.ts
+  s_94e82681f78b76::t_b6e9f4ac145e1c 71-84
+apps/dev.sh
+  s_5903dbbeabd0f4::t_9c8f9d806f5093 16
+  s_5903dbbeabd0f4::t_ba83248abe67ab 116-150,156
+  s_7148c442d1b501::t_05889b4a48d597 17
+  s_5903dbbeabd0f4::t_27f2512f5b9517 39-43
+  s_7148c442d1b501::t_aac7898c0fd1d8 177-191,197
+apps/server/app/services/agent.py
+  s_e4a8d97d60e061::t_6e4f16de8edabb 33-36,44
+  s_5f8b520f657223::t_48f12eb7129904 107,119,133-134
+  s_c621cae1e49b8d::t_cbeb9392f2f466 10
+  s_5f8b520f657223::t_979bb0af1008f8 165-169
+skills/api-prepare-mock-data/SKILL.md
+  s_e4a8d97d60e061::t_6e4f16de8edabb 2
+apps/web/src/components/Collapsible.tsx
+  s_94e82681f78b76::t_052c2232617653 16
+apps/server/tests/test_platform_config.py
+  s_c621cae1e49b8d::t_ee23f10abac7ae 61-136
+  s_e4a8d97d60e061::t_6e4f16de8edabb 25,141,158
+apps/web/src/App.tsx
+  s_c621cae1e49b8d::t_6f97f51dd51f44 94
+README.md
+  s_7148c442d1b501::t_e3f30fa207f406 5,11,40,60
+  s_7148c442d1b501::t_72c6a7a2178182 3,7,13,15,17-18,21,25,28,31,35-36,42,44-45,47,49-52,54,56,64,81
+  s_e4a8d97d60e061::t_6e4f16de8edabb 33,62,80
+  s_7148c442d1b501::t_a52e6322cda166 1,9,38,58
+apps/server/tests/test_lifecycle.py
+  s_5f8b520f657223::t_a8d240820b207d 107
+  s_5f8b520f657223::t_cc51ae37b2e6db 1-106,108-160
+apps/web/src/components/ToolCard.test.tsx
+  s_94e82681f78b76::t_e84147b2666030 3-9,11,22-24,52-75
+  s_94e82681f78b76::t_d7a230e3979390 1
+  s_94e82681f78b76::t_7e7c2d5677cb95 10,12-17,32-33,36-39,41-42,44-48,50-51
+  s_94e82681f78b76::t_5e61d8e33e4096 2,18,21,25-30,35,76-93
+  s_94e82681f78b76::t_3d59d3ef6dc0fe 20,34
+  s_94e82681f78b76::t_86b020102f86dc 40,43,49
+apps/web/src/components/ChatPanel.tsx
+  s_c621cae1e49b8d::t_fc5dc218dcabb6 85-89
+  s_534f42248c13e6::t_fc130f10346c73 119-134
+  s_c621cae1e49b8d::t_822c46fedbd603 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.44-trip",
+  "base_commit_sha": "f2b2b20133f439c682fb98f81c716348b180c2ea",
+  "prompts": {},
+  "sessions": {
+    "s_0218bc5dd7e492": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ea63b507-ada9-4f06-860a-80e4560d7494",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_534f42248c13e6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8cdad5b6-9b57-4096-9460-683a4d8185b8",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_5903dbbeabd0f4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0765718d-1a8c-4d95-a4fb-a2311a7ecfbc",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_5f8b520f657223": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bada6c26-d456-498f-bb5c-1d64fa1bd4bc",
+        "model": "ep-tavmzh6e"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_7148c442d1b501": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "17550d50-4f24-4c09-85d3-0bb07de6939d",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_896018e7a53396": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bc2e2a6a-0546-40cc-8a52-4b025498fb0d",
+        "model": "cursor-grok-4.6-medium"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_9435bd35165a9a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a85e2cb6-3f86-48ee-b789-d1fc154ae1d3",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_94e82681f78b76": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "dc4ddf66-8a46-44ae-86c9-e2e77f6395b6",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_c621cae1e49b8d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "693ea18f-6b1c-4776-b94c-94d03fab75e6",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    },
+    "s_e4a8d97d60e061": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b0c9acfe-8191-4d7e-b8c5-964eb33cf70c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
