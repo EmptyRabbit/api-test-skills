@@ -45,25 +45,153 @@ fi
 log() { printf '\033[36m[dev]\033[0m %s\n' "$*"; }
 err() { printf '\033[31m[dev]\033[0m %s\n' "$*" >&2; }
 
-# Windows 上 PATH 里的 npm code-server 往往残缺；优先看 WSL ~/.local/code-server
-code_server_hint() {
+# 与 vscode.py _WSL_DETECT 保持同一组候选（官方 standalone + 旧路径）
+WSL_CODE_SERVER_DETECT='for p in "$HOME/.local/bin/code-server" "$HOME/.local/code-server/bin/code-server" /usr/bin/code-server /usr/lib/code-server/bin/code-server; do [ -x "$p" ] && echo "$p" && exit 0; done; exit 1'
+CODE_SERVER_INSTALL_SH='curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone'
+
+prepend_local_bin_path() {
+  local local_bin="$HOME/.local/bin"
+  case ":$PATH:" in
+    *":$local_bin:"*) ;;
+    *) export PATH="$local_bin:$PATH" ;;
+  esac
+}
+
+code_server_broken_windows_npm() {
+  local bin="${1:-}" dir pkg
+  [ -n "$bin" ] || return 1
+  dir="$(cd "$(dirname "$bin")" 2>/dev/null && pwd)" || dir="$(dirname "$bin")"
+  pkg="$dir/node_modules/code-server"
+  [ -d "$pkg" ] || return 1
+  [ -f "$pkg/out/node/entry.js" ] && return 1
+  return 0
+}
+
+detect_wsl_code_server() {
   local p=""
-  if command -v wsl.exe >/dev/null 2>&1; then
-    p="$(
-      wsl.exe --exec /bin/bash --noprofile --norc -c \
-        'for p in "$HOME/.local/code-server/bin/code-server" /usr/bin/code-server /usr/lib/code-server/bin/code-server; do [ -x "$p" ] && echo "$p" && exit 0; done; exit 1' \
-        2>/dev/null | tr -d '\r' | tail -n 1
-    )"
+  command -v wsl.exe >/dev/null 2>&1 || return 1
+  p="$(
+    wsl.exe --exec /bin/bash --noprofile --norc -c "$WSL_CODE_SERVER_DETECT" \
+      2>/dev/null | tr -d '\r' | tail -n 1
+  )"
+  [ -n "$p" ] || return 1
+  printf '%s\n' "$p"
+}
+
+wsl_linux_bin_exists() {
+  local linux="${1:-}"
+  [ -n "$linux" ] || return 1
+  command -v wsl.exe >/dev/null 2>&1 || return 1
+  wsl.exe --exec /bin/bash --noprofile --norc -c "[ -x \"$linux\" ]" >/dev/null 2>&1
+}
+
+detect_native_code_server() {
+  local configured="${PLATFORM_CODE_SERVER_BIN:-}" cand found=""
+  if [ -n "$configured" ] && [ "${configured#wsl:}" = "$configured" ]; then
+    if [ -f "$configured" ] && ! code_server_broken_windows_npm "$configured"; then
+      printf '%s\n' "$configured"
+      return 0
+    fi
   fi
-  if [ -n "$p" ]; then
-    log "VS Code 页签: 使用 WSL code-server ($p)"
+  for cand in "$HOME/.local/bin/code-server" "$HOME/.local/code-server/bin/code-server"; do
+    if [ -f "$cand" ]; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+  done
+  found="$(command -v code-server 2>/dev/null || true)"
+  if [ -n "$found" ] && ! code_server_broken_windows_npm "$found"; then
+    printf '%s\n' "$found"
     return 0
   fi
-  if command -v code-server >/dev/null 2>&1; then
-    log "VS Code 页签: 使用 PATH 中的 code-server"
+  if [ "$IS_WIN" = 1 ]; then
+    found="$(command -v code-server.cmd 2>/dev/null || true)"
+    if [ -n "$found" ] && ! code_server_broken_windows_npm "$found"; then
+      printf '%s\n' "$found"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+detect_usable_code_server() {
+  local configured="${PLATFORM_CODE_SERVER_BIN:-}" linux p
+  if [ -n "$configured" ] && [ "${configured#wsl:}" != "$configured" ]; then
+    linux="${configured#wsl:}"
+    if [ -n "$linux" ]; then
+      if wsl_linux_bin_exists "$linux"; then
+        printf 'wsl:%s\n' "$linux"
+        return 0
+      fi
+    else
+      p="$(detect_wsl_code_server || true)"
+      if [ -n "$p" ]; then
+        printf 'wsl:%s\n' "$p"
+        return 0
+      fi
+    fi
+  elif [ -n "$configured" ] && [ "${configured#wsl:}" = "$configured" ]; then
+    if [ -f "$configured" ] && ! code_server_broken_windows_npm "$configured"; then
+      printf '%s\n' "$configured"
+      return 0
+    fi
+  fi
+  if [ "$IS_WIN" = 1 ]; then
+    p="$(detect_wsl_code_server || true)"
+    if [ -n "$p" ]; then
+      printf 'wsl:%s\n' "$p"
+      return 0
+    fi
+  fi
+  detect_native_code_server
+}
+
+run_with_optional_timeout() {
+  if [ -x /usr/bin/timeout ]; then
+    /usr/bin/timeout 600 "$@"
+  else
+    "$@"
+  fi
+}
+
+install_code_server_standalone() {
+  if [ "$IS_WIN" = 1 ]; then
+    if ! command -v wsl.exe >/dev/null 2>&1; then
+      log "未检测到 WSL，无法自动安装 code-server。请安装 WSL 后重新 start，或设置 PLATFORM_CODE_SERVER_BIN。网页仍可使用（无 VS Code 页签）。"
+      return 0
+    fi
+    log "正在 WSL 中安装 code-server（standalone，可能需要几分钟）…"
+    if ! run_with_optional_timeout wsl.exe --exec /bin/bash --noprofile --norc -c \
+      "$CODE_SERVER_INSTALL_SH"; then
+      err "WSL 中安装 code-server 失败。可手工执行: wsl --exec bash -lc '$CODE_SERVER_INSTALL_SH'"
+    fi
+    return 0
+  fi
+  log "正在安装 code-server（standalone → ~/.local，可能需要几分钟）…"
+  if ! run_with_optional_timeout bash -c "$CODE_SERVER_INSTALL_SH"; then
+    err "安装 code-server 失败。可手工执行: $CODE_SERVER_INSTALL_SH"
+  fi
+  return 0
+}
+
+ensure_code_server() {
+  prepend_local_bin_path
+  local found
+  found="$(detect_usable_code_server || true)"
+  if [ -n "$found" ]; then
+    log "VS Code 页签: 使用 $found"
+    return 0
+  fi
+  log "未检测到可用 code-server，尝试自动安装"
+  install_code_server_standalone
+  prepend_local_bin_path
+  found="$(detect_usable_code_server || true)"
+  if [ -n "$found" ]; then
+    log "VS Code 页签: 使用 $found"
     return 0
   fi
   log "提示: 未检测到可用 code-server，VS Code 页签可能不可用；文件/聊天正常"
+  return 0
 }
 
 # 监听指定端口的进程 PID 列表（去重，可能为空）
@@ -209,10 +337,10 @@ start_web() {
 }
 
 cmd_start() {
+  ensure_code_server
   start_server || return 1
   start_web || { err "前端启动失败（后端保持运行，可用 ./dev.sh stop 全停）"; return 1; }
   log "全部就绪 → 浏览器打开 http://localhost:5173"
-  code_server_hint
 }
 
 cmd_stop() {

@@ -110,6 +110,23 @@ def test_resolve_bin_missing():
         vscode.resolve_code_server_bin("definitely-not-a-code-server-bin")
 
 
+def test_wsl_detect_script_includes_official_standalone_bin():
+    assert '"$HOME/.local/bin/code-server"' in vscode._WSL_DETECT
+    assert '"$HOME/.local/code-server/bin/code-server"' in vscode._WSL_DETECT
+
+
+def test_resolve_bin_falls_back_to_home_local(tmp_path, monkeypatch):
+    monkeypatch.setattr(vscode.shutil, "which", lambda _n: None)
+    monkeypatch.setattr(vscode.Path, "home", classmethod(lambda cls: tmp_path))
+    missing = "definitely-not-a-code-server-bin"
+    with pytest.raises(vscode.CodeServerError, match="未找到"):
+        vscode.resolve_code_server_bin(missing)
+    target = tmp_path / ".local" / "bin" / "code-server"
+    target.parent.mkdir(parents=True)
+    target.write_text("#!/bin/sh\n", encoding="utf-8")
+    assert vscode.resolve_code_server_bin("code-server") == str(target)
+
+
 async def test_ensure_missing_bin(settings, monkeypatch):
     monkeypatch.setattr("app.services.workspace._data_dir", settings.data_dir)
     mgr = vscode.CodeServerManager(bin="definitely-not-a-code-server-bin", extra_args=[])

@@ -39,7 +39,7 @@ npx skills add https://github.com/EmptyRabbit/api-test-skills.git -g -y --agent 
 
 ## 用法二：本地网页
 
-需要：Git（Windows：[Git for Windows](https://git-scm.com/download/win)）、Python 3.11+、Node 18+、已登录的 `claude` CLI。
+需要：Git（Windows：[Git for Windows](https://git-scm.com/download/win)）、Python 3.11+、Node 18+、已登录的 `claude` CLI。VS Code 页签依赖 code-server：`dev.sh start` / `dev.cmd start` 会尝试用官方 standalone 自动安装；Windows 需要 [WSL](https://learn.microsoft.com/windows/wsl/install)（仅有 Git for Windows 不够）。没有 WSL 时网页仍可打开，但 VS Code 页签不可用。
 
 1. 下载本仓库。
 2. 复制 `apps/server/platform.yaml.example` → `apps/server/platform.yaml`（密钥勿提交）。无适配则 `vendor: none`；模型/token 按文件注释填。

@@ -136,6 +136,14 @@ def minimal_code_server_args(data_dir: Path) -> list[str]:
     ]
 
 
+def home_code_server_bins() -> list[Path]:
+    home = Path.home()
+    return [
+        home / ".local" / "bin" / "code-server",
+        home / ".local" / "code-server" / "bin" / "code-server",
+    ]
+
+
 def resolve_code_server_bin(bin_name: str) -> str:
     """Windows 上 CreateProcess 不吃无后缀 npm shim，必须落到 .cmd/.exe。"""
     names = [bin_name]
@@ -147,6 +155,11 @@ def resolve_code_server_bin(bin_name: str) -> str:
         found = shutil.which(name)
         if found:
             return found
+    stem = Path(bin_name).name.lower()
+    if stem in {"code-server", "code-server.cmd", "code-server.bat", "code-server.exe"}:
+        for cand in home_code_server_bins():
+            if cand.is_file():
+                return str(cand)
     raise CodeServerError(
         f"未找到可执行文件 {bin_name}。请安装 code-server，或设置 PLATFORM_CODE_SERVER_BIN 为完整路径。"
     )
@@ -182,6 +195,7 @@ def win_to_wsl_path(path: Path) -> str:
 
 _WSL_DETECT = (
     "for p in "
+    '"$HOME/.local/bin/code-server" '
     '"$HOME/.local/code-server/bin/code-server" '
     "/usr/bin/code-server "
     "/usr/lib/code-server/bin/code-server; "
