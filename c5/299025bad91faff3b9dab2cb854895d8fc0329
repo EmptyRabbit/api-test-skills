@@ -1,0 +1,28 @@
+apps/server/README.md
+  s_442d4ad43c9713::t_85669193cdcea1 39
+  s_442d4ad43c9713::t_3dd670a541c467 27
+apps/server/app/services/vscode.py
+  s_442d4ad43c9713::t_1a73d035945642 139-146,158-162
+  s_442d4ad43c9713::t_11e2c38b193972 198
+apps/dev.sh
+  s_442d4ad43c9713::t_3b8e8115e9f572 48-70,72-182,185-190,194
+  s_442d4ad43c9713::t_c9ca9ebd221d39 340
+apps/server/tests/test_vscode.py
+  s_442d4ad43c9713::t_7d58d98ca11709 113-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.45-trip",
+  "base_commit_sha": "c5299025bad91faff3b9dab2cb854895d8fc0329",
+  "prompts": {},
+  "sessions": {
+    "s_442d4ad43c9713": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a9be5d19-75b6-4e36-9d0e-c14435d2d176",
+        "model": "grok-4.6"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
