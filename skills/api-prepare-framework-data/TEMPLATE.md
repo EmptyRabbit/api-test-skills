@@ -3,7 +3,7 @@
 ```markdown
 > 阶段：batch1/04-框架数据
 > 状态：待确认
-> 上游：02-scenarios.md、03-mock-plan.md
+> 上游：batch1/02-scenarios.md、03-mock-plan.md
 > 更新时间：YYYY-MM-DD HH:MM
 
 **一句话结论**：本批只有 S3 需要造数——DB 插一条 PAID 订单、发一条 order.paid 消息；

@@ -1,4 +1,5 @@
 import pymysql
+from . import request_log
 from .config import get_db_config
 
 
@@ -24,6 +25,7 @@ class DBClient:
             cursorclass=pymysql.cursors.DictCursor
         )
 
+    @request_log.logged("db")
     def query(self, sql, params=None):
         """执行 SELECT 查询，返回所有结果行（list of dict）"""
         conn = self._get_connection()
@@ -34,6 +36,7 @@ class DBClient:
         finally:
             conn.close()
 
+    @request_log.logged("db")
     def query_one(self, sql, params=None):
         """执行 SELECT 查询，返回第一条结果行（dict），无结果时返回 None"""
         conn = self._get_connection()
@@ -44,6 +47,7 @@ class DBClient:
         finally:
             conn.close()
 
+    @request_log.logged("db")
     def execute(self, sql, params=None):
         """执行 SQL 语句（INSERT/UPDATE/DELETE），返回受影响行数"""
         conn = self._get_connection()

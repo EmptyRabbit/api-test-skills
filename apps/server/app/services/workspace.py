@@ -10,16 +10,45 @@ from app.db import SessionRow
 from app.windows_loop import hidden_popen_kwargs
 
 
+def _fs_path(path: Path | str) -> str:
+    """Absolute path for shutil/os. Windows gets the \\\\?\\ prefix (MAX_PATH); POSIX is unchanged."""
+    p = os.path.abspath(os.fspath(path))
+    if os.name != "nt":
+        return p
+    if p.startswith("\\\\?\\"):
+        return p
+    if p.startswith("\\\\"):
+        return "\\\\?\\UNC\\" + p[2:]
+    return "\\\\?\\" + p
+
+
+def _make_writable(p: str) -> None:
+    # POSIX: OR in owner rwx so directories keep search/execute. Windows: clears readonly.
+    mode = os.stat(p).st_mode
+    os.chmod(p, mode | stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
+
+
 def _rmtree(path: Path) -> None:
-    """shutil.rmtree wrapper that handles read-only files on Windows (e.g. .git objects)."""
+    """Delete a tree on Windows/Linux/macOS (readonly git files, unwritable dirs, long paths)."""
     import shutil
 
-    def _handle_readonly(func, p, exc_info):
-        # Make read-only files writable, then retry
-        os.chmod(p, stat.S_IWRITE)
-        func(p)
+    def _onerror(func, p, exc_info):
+        if isinstance(exc_info[1], FileNotFoundError):
+            return
+        # POSIX unlink needs the parent dir writable; Windows often needs the file itself.
+        for target in (p, os.path.dirname(p)):
+            if not target:
+                continue
+            try:
+                _make_writable(target)
+            except FileNotFoundError:
+                return
+        try:
+            func(p)
+        except FileNotFoundError:
+            return
 
-    shutil.rmtree(path, onerror=_handle_readonly)
+    shutil.rmtree(_fs_path(path), onerror=_onerror)
 
 
 class WorkspaceError(Exception):

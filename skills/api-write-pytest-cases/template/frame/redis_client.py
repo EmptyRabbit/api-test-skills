@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import redis
 
+from . import request_log
 from .config import get_redis_config
 
 
@@ -35,6 +36,7 @@ class RedisClient:
 
     def __init__(self, cluster_name: str, read_master: bool = False) -> None:
         cfg = get_redis_config(cluster_name)
+        self.cluster_name = cluster_name
         self._client = redis.Redis(
             host=cfg["host"],
             port=cfg.get("port", 6379),
@@ -45,12 +47,15 @@ class RedisClient:
         # 核心通用实现里 read_master 不生效；参数保留供 vendor 适配层使用
         self._read_master = read_master
 
+    @request_log.logged("redis")
     def get(self, key: str) -> Optional[str]:
         return self._client.get(key)
 
+    @request_log.logged("redis")
     def set(self, key: str, value: Any, ex: Optional[int] = None) -> bool:
         return bool(self._client.set(key, _dump(value), ex=ex))
 
+    @request_log.logged("redis")
     def zadd(
         self,
         key: str,
@@ -64,6 +69,7 @@ class RedisClient:
             self._client.expire(key, ex)
         return result
 
+    @request_log.logged("redis")
     def zrange(
         self,
         key: str,
@@ -74,6 +80,7 @@ class RedisClient:
     ) -> List[Union[str, Tuple[str, float]]]:
         return self._client.zrange(key, start, end, desc=desc, withscores=withscores)
 
+    @request_log.logged("redis")
     def zrangebyscore(
         self,
         key: str,
@@ -92,12 +99,14 @@ class RedisClient:
             withscores=withscores,
         )
 
+    @request_log.logged("redis")
     def hset(self, key: str, field: str, value: Any, ex: Optional[int] = None) -> int:
         result = self._client.hset(key, field, _dump(value))
         if ex is not None:
             self._client.expire(key, ex)
         return result
 
+    @request_log.logged("redis")
     def hmset(self, key: str, mapping: Dict[str, Any], ex: Optional[int] = None) -> bool:
         """
         批量设置 Hash 字段。非 str/bytes 会 JSON 序列化。
@@ -111,14 +120,18 @@ class RedisClient:
             self._client.expire(key, ex)
         return bool(result)
 
+    @request_log.logged("redis")
     def hget(self, key: str, field: str) -> Optional[str]:
         return self._client.hget(key, field)
 
+    @request_log.logged("redis")
     def hgetall(self, key: str) -> Dict[str, str]:
         return self._client.hgetall(key) or {}
 
+    @request_log.logged("redis")
     def expire(self, key: str, seconds: int) -> bool:
         return bool(self._client.expire(key, seconds))
 
+    @request_log.logged("redis")
     def delete(self, key: str) -> int:
         return self._client.delete(key)

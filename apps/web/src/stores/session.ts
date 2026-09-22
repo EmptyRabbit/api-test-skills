@@ -17,6 +17,7 @@ interface SessionState {
     auth_token?: string;
   }) => Promise<SessionInfo>;
   openSession: (sid: string) => Promise<void>;
+  deleteSession: (sid: string) => Promise<void>;
   clearCurrent: () => void;
 }
 
@@ -61,6 +62,15 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     if (isPreparing(s.status)) {
       await pollUntilDone(sid, (each) => set({ current: each }));
     }
+  },
+
+  deleteSession: async (sid) => {
+    await api.delete(`/api/sessions/${sid}?purge=true`);
+    const { current, sessions } = get();
+    set({
+      sessions: sessions.filter((s) => s.id !== sid),
+      current: current?.id === sid ? null : current,
+    });
   },
 
   clearCurrent: () => set({ current: null }),

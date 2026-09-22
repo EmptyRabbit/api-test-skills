@@ -15,11 +15,14 @@
         timeout 单位毫秒，batch 单次最大条数。
 """
 
+from . import request_log
+
 
 class MqClient:
     """MQ 客户端占位。核心模板不提供实现，由适配层替换。"""
 
     @classmethod
+    @request_log.logged("mq")
     def send(cls, topic: str, data: dict, **kwargs) -> dict:
         raise NotImplementedError(
             "MqClient.send 未实现。请安装对应的 vendor 适配 skill，"
@@ -27,6 +30,7 @@ class MqClient:
         )
 
     @classmethod
+    @request_log.logged("mq")
     def pull(cls, subject: str, group: str, timeout: int, batch: int, **kwargs) -> list:
         raise NotImplementedError(
             "MqClient.pull 未实现。请安装对应的 vendor 适配 skill，"

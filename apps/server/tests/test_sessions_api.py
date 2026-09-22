@@ -124,15 +124,28 @@ def test_delete_soft_and_purge(client, tmp_path):
             "feature_branch": "feature/x",
         },
     ).json()["id"]
+    from app.db import MessageRow, SessionLocal, SessionRow
     from app.services import workspace
+
+    with SessionLocal() as s:
+        s.add(MessageRow(session_id=sid, role="user", content=[{"kind": "text", "text": "hi"}]))
+        s.commit()
+
+    workspace.workspace_root(sid).mkdir(parents=True, exist_ok=True)
+    (workspace.workspace_root(sid) / "keep.txt").write_text("x", encoding="utf-8")
 
     resp = client.delete(f"/api/sessions/{sid}")
     assert resp.status_code == 204
     assert workspace.workspace_root(sid).exists()  # 软删保留文件
+    listing = client.get("/api/sessions", params={"user_name": "bob"}).json()
+    assert all(item["id"] != sid for item in listing)
 
     resp = client.delete(f"/api/sessions/{sid}?purge=true")
     assert resp.status_code == 204
     assert not workspace.workspace_root(sid).exists()
+    with SessionLocal() as s:
+        assert s.get(SessionRow, sid) is None
+        assert s.query(MessageRow).filter_by(session_id=sid).count() == 0
 
 
 def test_create_rejects_unknown_model(tmp_path, monkeypatch, settings):

@@ -5,13 +5,14 @@ description: 为接口测试场景设计外部依赖接口的 mock 方案，逐�
 
 # Mock 数据准备
 
-读 `01-change-analysis.md` 的外部接口依赖和 `02-scenarios.md`，产出 `03-mock-plan.md`。
+读 `01-change-analysis.md` 的外部接口依赖和当前批次的 `02-scenarios.md`，产出 `03-mock-plan.md`。
 产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../api-generate-api-tests/CONVENTIONS.md`。
 
 ## 批次范围
 
-只处理**当前批次**的场景。先读 `02-scenarios.md` 的「批次」列，筛出本批次场景，
-其余场景一律不碰——它们的 mock 等轮到那一批再设计，提前做会因为前置变化白费。
+只处理**当前批次**的场景。场景已经按批拆开，直接读 `docs/batch<N>/02-scenarios.md`，
+里面的场景全部属于本批，不用再筛。其他批次的场景文件一律不碰——它们的 mock 等
+轮到那一批再设计，提前做会因为前置变化白费。
 
 产物落到 `docs/batch<N>/03-mock-plan.md`，状态头的阶段写成 `batch<N>/03-mock 方案`。
 
@@ -59,7 +60,7 @@ description: 为接口测试场景设计外部依赖接口的 mock 方案，逐�
 
 ### 4. 报文与场景断言的一致性检查
 
-生成报文后，把关键字段列一张表和 `02-scenarios.md` 的场景断言对比：
+生成报文后，把关键字段列一张表和本批 `02-scenarios.md` 的场景断言对比：
 
 | 场景 | mock 里的关键值 | 场景断言里的期望值 | 一致？ |
 |---|---|---|---|

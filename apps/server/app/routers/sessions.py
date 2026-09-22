@@ -1,15 +1,11 @@
-import asyncio
-import logging
-
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 from app import db
 from app.db import SessionRow, new_session_id
-from app.services import lifecycle, workspace
+from app.services import lifecycle
 
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
-logger = logging.getLogger(__name__)
 
 
 class SessionCreate(BaseModel):
@@ -112,15 +108,4 @@ async def manual_snapshot(sid: str):
 
 @router.delete("/{sid}", status_code=204)
 async def delete_session(sid: str, purge: bool = Query(False)):
-    await lifecycle.get_session(sid, include_deleted=True)
-
-    def _soft(s):
-        row = s.get(SessionRow, sid)
-        row.deleted = True
-        s.commit()
-
-    await db.run_db(_soft)
-    if purge:
-        root = workspace.workspace_root(sid)
-        if root.exists():
-            await asyncio.to_thread(workspace._rmtree, root)
+    await lifecycle.delete_session(sid, purge=purge)

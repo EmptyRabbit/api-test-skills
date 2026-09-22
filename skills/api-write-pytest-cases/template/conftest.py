@@ -34,7 +34,8 @@ def redis_client():
 @pytest.fixture(autouse=True)
 def log_requests(request):
     """
-    自动把本用例发出的所有 HTTP 请求与响应写到 logs/<用例名>.md。
+    自动把本用例发出的所有客户端操作（HTTP / DB / Redis / MQ 等）
+    按调用顺序写到 logs/<用例名>.md，每条含传参和结果。
 
     用例代码不需要关心这个 fixture。用例失败时 teardown 照样执行，
     所以失败用例一定有日志，排障和复现直接看这个文件。

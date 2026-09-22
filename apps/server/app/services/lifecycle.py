@@ -160,20 +160,34 @@ def kick_restore(sid: str) -> None:
     _kick(sid, _restore_task)
 
 
+def _session_gone(row: SessionRow | None) -> bool:
+    return row is None or row.deleted
+
+
+async def _remove_workspace(sid: str) -> None:
+    root = workspace.workspace_root(sid)
+    if root.exists():
+        await asyncio.to_thread(workspace._rmtree, root)
+
+
 async def _workspace_task(sid: str, *, restore: bool) -> None:
     try:
+        row = await db.run_db(lambda s: s.get(SessionRow, sid))
+        if _session_gone(row):
+            return
+        restore_fn = None
         if restore:
-            row = await get_session(sid)
             from app.services.snapshots import restore_artifacts
 
             restore_fn = restore_artifacts
-        else:
-            row = await db.run_db(lambda s: s.get(SessionRow, sid))
-            restore_fn = None
         token, username = current_git_auth()
         await workspace.ensure_workspace(
             row, restore_artifacts=restore_fn, token=token, username=username
         )
+        still = await db.run_db(lambda s: s.get(SessionRow, sid))
+        if _session_gone(still):
+            await _remove_workspace(sid)
+            return
         await _set_status(sid, "ready", "")
     except workspace.WorkspaceError as e:
         await _set_status(sid, "error", str(e))
@@ -204,3 +218,48 @@ async def rehydrate(row: SessionRow) -> SessionRow:
     elif row.status == "restoring":
         _kick(sid, _restore_task)
     return row
+
+
+async def _stop_session_runtimes(sid: str) -> None:
+    try:
+        await agent.stop_agent(sid)
+    except Exception:  # noqa: BLE001
+        logger.exception("stop agent on delete failed sid=%s", sid)
+    try:
+        from app.services.vscode import manager as vscode_manager
+
+        await vscode_manager.shutdown(sid)
+    except Exception:  # noqa: BLE001
+        logger.exception("shutdown vscode on delete failed sid=%s", sid)
+
+
+def _write_delete(s, sid: str, *, purge: bool) -> None:
+    from app.db import MessageRow, SnapshotFileRow, SnapshotRow
+
+    if not purge:
+        row = s.get(SessionRow, sid)
+        if row is not None:
+            row.deleted = True
+        s.commit()
+        return
+
+    snap_ids = s.query(SnapshotRow.id).filter_by(session_id=sid)
+    s.query(SnapshotFileRow).filter(SnapshotFileRow.snapshot_id.in_(snap_ids)).delete(
+        synchronize_session=False
+    )
+    s.query(SnapshotRow).filter_by(session_id=sid).delete(synchronize_session=False)
+    s.query(MessageRow).filter_by(session_id=sid).delete(synchronize_session=False)
+    row = s.get(SessionRow, sid)
+    if row is not None:
+        s.delete(row)
+    s.commit()
+
+
+async def delete_session(sid: str, *, purge: bool) -> None:
+    """软删会话；purge 时停进程、删工作区，并硬删 DB 中该会话的全部记录。"""
+    await get_session(sid, include_deleted=True)
+    _inflight.discard(sid)
+    await _stop_session_runtimes(sid)
+    if purge:
+        await _remove_workspace(sid)
+    await db.run_db(lambda s: _write_delete(s, sid, purge=purge))
