@@ -3,7 +3,7 @@
 ```markdown
 > 阶段：batch1/03-mock 方案
 > 状态：待确认
-> 上游：02-scenarios.md
+> 上游：batch1/02-scenarios.md
 > 更新时间：YYYY-MM-DD HH:MM
 
 **一句话结论**：本批 3 个场景涉及 2 个外部接口，`queryUserCoin` 走 mock（FAT 造不出

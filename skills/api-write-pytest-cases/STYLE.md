@@ -24,7 +24,7 @@ helper 继续保留，它们省下的重复远多于增加的跳转成本。`par
 每个 test 函数用 docstring 写清两件事，语言简洁：
 
 1. **场景**：一句话业务描述（含关键条件、预期结果），然后用括号或末尾标记
-   对应场景 ID 和改动点，用于追溯 `02-scenarios.md`；
+   对应场景 ID 和改动点，用于追溯本批 `docs/batch<N>/02-scenarios.md`；
 2. **步骤**：编号列出这条用例做了哪些外部动作，每步一行。
 
 **docstring 首句给读的人看，场景 ID 只做追溯**：不要用 `场景：S1 有卖点+有城...`
@@ -323,15 +323,16 @@ from tests.env_config import APP_ID, ENV_NAME, OPERATION, POD_IP
 
 业务断言常量（错误码、模板 ID、期望文案）留在各自文件内，不集中。
 
-## 请求日志
+## 操作日志
 
-用例发出的每次 HTTP 请求与响应会自动落盘到 `logs/<用例函数名>.md`，
-由 `frame/http_client.py` 和 `conftest.py` 的 autouse fixture 完成。
-**用例代码不需要写任何日志相关代码**，也不要自己 print 报文。
+用例里每次客户端调用（HTTP / DB / Redis / MQ 等）会按执行顺序落盘到 `logs/<用例函数名>.md`，
+由各 `frame/*_client.py` 和 `conftest.py` 的 autouse fixture 完成。
+**用例代码不需要写任何日志相关代码**，也不要自己 print 报文或 SQL。
 
-具体来说：`HttpClient.get` 和 `HttpClient.post` 在每次调用后自动记录请求与响应；
-`conftest.py` 里的 `log_requests` fixture 是 autouse，在每个用例结束后（包括失败时）把记录
-写到 `<rootdir>/logs/<sanitized-test-name>.md`。
+具体来说：`HttpClient.get` / `post` 在拿到响应后记录传参与结果；`DBClient`、`RedisClient`、
+`MqClient` 的公开方法通过 `request_log.logged` 自动记录。vendor overlay 若整文件替换客户端，
+公开方法同样要挂 `@request_log.logged("<kind>")`。`conftest.py` 里 `log_requests` fixture
+是 autouse，在每个用例结束后（包括失败时）把记录写到 `<rootdir>/logs/<sanitized-test-name>.md`。
 
 日志文件名来自 `request.node.name`，所以 `parametrize` 用例的文件名里会带上参数值，
 例如 `test_selling_point_with_city[S1-F].md`。这是正常现象，不同参数组合各有独立日志。

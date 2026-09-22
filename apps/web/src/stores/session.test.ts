@@ -13,6 +13,7 @@ vi.mock('../api/client', () => ({
       throw new Error(path);
     }),
     post: vi.fn(async () => ({ ...fixtures.s1, status: 'cloning' })),
+    delete: vi.fn(async () => undefined),
   },
 }));
 
@@ -39,5 +40,16 @@ describe('session store', () => {
     await useSessionStore.getState().loadSessions();
     expect(api.get).toHaveBeenCalledWith('/api/sessions?user_name=alice');
     expect(useSessionStore.getState().sessions).toHaveLength(1);
+  });
+
+  it('deleteSession purges and drops current', async () => {
+    useSessionStore.setState({
+      sessions: [fixtures.s1],
+      current: fixtures.s1 as never,
+    });
+    await useSessionStore.getState().deleteSession('s1');
+    expect(api.delete).toHaveBeenCalledWith('/api/sessions/s1?purge=true');
+    expect(useSessionStore.getState().sessions).toEqual([]);
+    expect(useSessionStore.getState().current).toBeNull();
   });
 });

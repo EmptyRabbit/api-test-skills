@@ -5,8 +5,8 @@ description: 依据测试场景、mock 方案和框架数据方案，基于 temp
 
 # 生成 pytest 用例
 
-读当前批次的 `03-mock-plan.md`、`04-framework-data.md` 以及全量的 `02-scenarios.md`（只处理
-本批次的场景），基于本 skill 目录下的 [template/](template/) 生成用例工程，并产出当前批次的
+读当前批次的 `02-scenarios.md`、`03-mock-plan.md`、`04-framework-data.md`（都在
+`docs/batch<N>/` 下），基于本 skill 目录下的 [template/](template/) 生成用例工程，并产出当前批次的
 `05-case-design.md`。
 
 代码风格及详细规则见 [STYLE.md](STYLE.md)，产物结构见 [TEMPLATE.md](TEMPLATE.md)，
@@ -14,7 +14,7 @@ description: 依据测试场景、mock 方案和框架数据方案，基于 temp
 
 ## 批次范围
 
-只为**当前批次**的场景生成用例。batch1 只写主流程（冒烟），跑通后才动 batch2。
+只为**当前批次**的场景生成用例，场景以 `docs/batch<N>/02-scenarios.md` 为准。batch1 跑通后才动 batch2。
 后续批次往已有文件里追加 test 函数，不要推倒重写；文件顶部 docstring 的
 「覆盖场景」和「批次」要一起更新。
 
@@ -57,7 +57,7 @@ appid / Pod IP。用不到的配置项删掉，不要留一堆模板占位。
 - 仅入参不同的同构场景用 `parametrize` 合并，参数里带场景 ID；
 - 业务型 helper（`_invoke`、`_assert_xxx`）只在同文件内两个以上场景复用时才抽，
   **不要跨文件共享**；纯工具型 helper（jsonpath 系列）走 `frame.jsonpath_utils`；
-- 不写任何日志代码，也不要 print 报文——请求响应由框架自动落到 `logs/`。
+- 不写任何日志代码，也不要 print 报文——客户端传参和结果由框架自动落到 `logs/`。
 
 **文件命名速查**（详见 STYLE.md §文件拆分与命名）：
 
@@ -69,8 +69,8 @@ tests/
 └── test_processor_chain_channel.py    通道投放
 ```
 
-**请求日志自动落盘**：`HttpClient` 每次调用后自动记录请求与响应，`conftest.py` 的 autouse
-fixture 在用例结束后写入 `logs/<用例函数名>.md`。**用例代码无需写任何日志相关代码**，
+**操作日志自动落盘**：各 `frame` 客户端每次调用后自动记录传参与结果，`conftest.py` 的 autouse
+fixture 在用例结束后按调用顺序写入 `logs/<用例函数名>.md`。**用例代码无需写任何日志相关代码**，
 也不要自己 print 报文。
 
 ## 3. 断言纪律
@@ -81,7 +81,7 @@ fixture 在用例结束后写入 `logs/<用例函数名>.md`。**用例代码无
 `jp` / `jp_all` / `assert_jp` / `load_json_field` 从 `frame.jsonpath_utils` 引入，
 不在用例文件里重复实现。string 化的 JSON 字段用 `load_json_field` 解开再走 jsonpath。
 
-**字段级完整断言**：`02-scenarios.md` 里写的每一条预期结果都要断到，不允许遗漏。
+**字段级完整断言**：本批 `02-scenarios.md` 里写的每一条预期结果都要断到，不允许遗漏。
 有副作用的场景补 DB / Redis / MQ 落地断言。
 
 **禁止防御性模糊写法**：不写多值兼容断言、不写字段名兜底查找、不绕开 jsonpath 直接链式取值。

@@ -145,11 +145,36 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   text-transform: uppercase; color: var(--muted); font-weight: 600;
 }
 .threads { flex: 1; overflow-x: hidden; overflow-y: auto; }
-.thread { padding: 8px 10px; border-radius: 10px; cursor: pointer; }
+.thread {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
 .thread:hover { background: var(--panel-hover); }
 .thread.on { background: var(--panel-active); }
+.thread-body { min-width: 0; flex: 1; }
 .thread .t { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .thread .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.thread-del {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  opacity: 0.55;
+}
+.thread-del:hover {
+  background: rgba(194, 48, 48, 0.1);
+  color: var(--danger);
+}
 
 .main { display: grid; grid-template-columns: 1fr 0fr; min-width: 0; min-height: 0; height: 100%; }
 .main.files { grid-template-columns: 1fr var(--drawer-w, 50%); }

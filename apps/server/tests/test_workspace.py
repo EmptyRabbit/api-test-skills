@@ -166,3 +166,43 @@ async def test_ensure_workspace_passes_token_to_clone(origin_repo, tmp_path, mon
     )
     await workspace.ensure_workspace(s, restore_artifacts=None, token="tok-1", username="gl")
     assert seen == {"token": "tok-1", "username": "gl"}
+
+
+def test_rmtree_deletes_readonly_git_objects(tmp_path):
+    root = tmp_path / "ws"
+    obj = root / ".git" / "objects"
+    obj.mkdir(parents=True)
+    blob = obj / "pack"
+    blob.write_text("x", encoding="utf-8")
+    blob.chmod(0o444)
+    workspace._rmtree(root)
+    assert not root.exists()
+
+
+def test_rmtree_deletes_when_directory_is_not_writable(tmp_path):
+    """POSIX 删文件要求父目录可写；只 chmod 文件本身在 Linux/macOS 上删不掉。"""
+    root = tmp_path / "ws"
+    d = root / "repo"
+    d.mkdir(parents=True)
+    blob = d / "pack"
+    blob.write_text("x", encoding="utf-8")
+    blob.chmod(0o444)
+    d.chmod(0o555)
+    workspace._rmtree(root)
+    assert not root.exists()
+
+
+def test_rmtree_deletes_deeply_nested_paths(tmp_path):
+    """Windows 超 MAX_PATH 要用 \\?\\；Linux/macOS 走原生绝对路径即可。"""
+    import os
+
+    root = tmp_path / "workspaces" / "sid" / "repo"
+    deep = root
+    for _ in range(8):
+        deep = deep / ("pkg-" + "x" * 28)
+    target = Path(workspace._fs_path(deep))
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "DisableAigcCopyApplication.java").write_text("class X {}", encoding="utf-8")
+    assert len(os.path.abspath(str(deep / "DisableAigcCopyApplication.java"))) > 260
+    workspace._rmtree(root)
+    assert not Path(workspace._fs_path(root)).exists()

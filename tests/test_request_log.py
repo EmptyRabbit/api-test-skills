@@ -21,8 +21,8 @@ def _build_response():
     )
 
 
-def test_dump_writes_request_and_response(tmp_path):
-    """一次调用要完整落盘：方法、路径、请求头、请求报文、响应报文。"""
+def test_dump_writes_params_and_result(tmp_path):
+    """一次调用要完整落盘：传参与结果，不再写「原始命令」专段。"""
     request_log.reset()
     request_log.add(_build_response())
 
@@ -32,8 +32,11 @@ def test_dump_writes_request_and_response(tmp_path):
     with open(path, encoding="utf-8") as handle:
         content = handle.read()
     assert "# 用例 test_demo" in content
-    assert "- 请求次数：1" in content
-    assert "POST /api/testProcessorChain" in content
+    assert "- 操作次数：1" in content
+    assert "### 传参" in content
+    assert "### 结果" in content
+    assert "POST" in content
+    assert "/api/testProcessorChain" in content
     assert "56032635" in content
     assert '"scenario": "T0_INSTALL"' in content
     assert '"errorCode": "20005"' in content
@@ -68,3 +71,38 @@ def test_case_name_with_brackets_is_sanitized(tmp_path):
     path = request_log.dump("test_demo[S8-F-11985]", str(tmp_path))
 
     assert os.path.basename(path) == "test_demo_S8-F-11985_.md"
+
+
+def test_add_op_keeps_call_order(tmp_path):
+    """不同类型操作按 append 顺序编号，方便对照用例步骤。"""
+    request_log.reset()
+    request_log.add_op("db", "query", {"sql": "SELECT 1", "params": None}, result=[{"n": 1}])
+    request_log.add(_build_response())
+    request_log.add_op("redis", "get", {"key": "foo"}, result="bar")
+
+    path = request_log.dump("test_order", str(tmp_path))
+    with open(path, encoding="utf-8") as handle:
+        content = handle.read()
+
+    db_at = content.index("## 1 · DB query")
+    http_at = content.index("## 2 · HTTP POST")
+    redis_at = content.index("## 3 · REDIS get")
+    assert db_at < http_at < redis_at
+    assert "- 操作次数：3" in content
+    assert "SELECT 1" in content
+    assert '"key": "foo"' in content
+    assert '"bar"' in content or "bar" in content
+
+
+def test_add_op_records_error_instead_of_result(tmp_path):
+    """调用失败时仍要留下传参和错误信息。"""
+    request_log.reset()
+    request_log.add_op("mq", "send", {"topic": "order.paid"}, error="MqClient.send 未实现")
+
+    path = request_log.dump("test_error", str(tmp_path))
+    with open(path, encoding="utf-8") as handle:
+        content = handle.read()
+    assert "### 传参" in content
+    assert "order.paid" in content
+    assert "### 结果" in content
+    assert "未实现" in content

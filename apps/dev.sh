@@ -48,6 +48,13 @@ err() { printf '\033[31m[dev]\033[0m %s\n' "$*" >&2; }
 # 与 vscode.py _WSL_DETECT 保持同一组候选（官方 standalone + 旧路径）
 WSL_CODE_SERVER_DETECT='for p in "$HOME/.local/bin/code-server" "$HOME/.local/code-server/bin/code-server" /usr/bin/code-server /usr/lib/code-server/bin/code-server; do [ -x "$p" ] && echo "$p" && exit 0; done; exit 1'
 CODE_SERVER_INSTALL_SH='curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone'
+# Git Bash 会把 /bin/bash 转成 Windows Git 路径；Windows 还会把 HOME 泄漏进 WSL。
+WSL_FIX_HOME='h=$(getent passwd "$(id -un)" | cut -d: -f6); [ -n "$h" ] && export HOME="$h"'
+
+wsl_exec_bash() {
+  MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' \
+    wsl.exe --exec /bin/bash --noprofile --norc -c "${WSL_FIX_HOME}; $1"
+}
 
 prepend_local_bin_path() {
   local local_bin="$HOME/.local/bin"
@@ -71,8 +78,7 @@ detect_wsl_code_server() {
   local p=""
   command -v wsl.exe >/dev/null 2>&1 || return 1
   p="$(
-    wsl.exe --exec /bin/bash --noprofile --norc -c "$WSL_CODE_SERVER_DETECT" \
-      2>/dev/null | tr -d '\r' | tail -n 1
+    wsl_exec_bash "$WSL_CODE_SERVER_DETECT" 2>/dev/null | tr -d '\r' | tail -n 1
   )"
   [ -n "$p" ] || return 1
   printf '%s\n' "$p"
@@ -82,7 +88,7 @@ wsl_linux_bin_exists() {
   local linux="${1:-}"
   [ -n "$linux" ] || return 1
   command -v wsl.exe >/dev/null 2>&1 || return 1
-  wsl.exe --exec /bin/bash --noprofile --norc -c "[ -x \"$linux\" ]" >/dev/null 2>&1
+  wsl_exec_bash "[ -x \"$linux\" ]" >/dev/null 2>&1
 }
 
 detect_native_code_server() {
@@ -161,9 +167,10 @@ install_code_server_standalone() {
       return 0
     fi
     log "正在 WSL 中安装 code-server（standalone，可能需要几分钟）…"
-    if ! run_with_optional_timeout wsl.exe --exec /bin/bash --noprofile --norc -c \
-      "$CODE_SERVER_INSTALL_SH"; then
-      err "WSL 中安装 code-server 失败。可手工执行: wsl --exec bash -lc '$CODE_SERVER_INSTALL_SH'"
+    if ! MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' \
+      run_with_optional_timeout wsl.exe --exec /bin/bash --noprofile --norc -c \
+      "${WSL_FIX_HOME}; ${CODE_SERVER_INSTALL_SH}"; then
+      err "WSL 中安装 code-server 失败。可手工执行: wsl -e /bin/bash -lc '$CODE_SERVER_INSTALL_SH'"
     fi
     return 0
   fi

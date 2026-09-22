@@ -23,7 +23,7 @@ class HttpClient:
         return f"{self.base_url}/{path.lstrip('/')}"
 
     def get(self, path, params=None, headers=None, **kwargs):
-        """发送 GET 请求。请求与响应会自动记入用例日志。"""
+        """发送 GET 请求。请求与响应会自动记入用例操作日志。"""
         url = self._build_url(path)
         resp = self.client.get(url, params=params, headers=headers or {}, timeout=self.timeout, **kwargs)
         # 日志记录失败不能影响真实请求的返回
@@ -34,7 +34,7 @@ class HttpClient:
         return resp
 
     def post(self, path, json=None, data=None, headers=None, **kwargs):
-        """发送 POST 请求。请求与响应会自动记入用例日志。"""
+        """发送 POST 请求。请求与响应会自动记入用例操作日志。"""
         url = self._build_url(path)
         resp = self.client.post(url, json=json, data=data, headers=headers or {}, timeout=self.timeout, **kwargs)
         # 日志记录失败不能影响真实请求的返回

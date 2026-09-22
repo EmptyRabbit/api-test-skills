@@ -5,13 +5,13 @@ description: 为接口测试场景设计 DB、Redis、配置中心、消息中�
 
 # 框架数据准备
 
-读 `01-change-analysis.md` 的依赖清单、`02-scenarios.md`、以及 `03-mock-plan.md` 末尾的
+读 `01-change-analysis.md` 的依赖清单、当前批次的 `02-scenarios.md`、以及 `03-mock-plan.md` 末尾的
 「遗留数据需求」，产出 `04-framework-data.md`。
 
 ## 批次范围
 
-只处理**当前批次**的场景。先读 `02-scenarios.md` 的「批次」列，筛出本批次场景，
-其余场景一律不碰。
+只处理**当前批次**的场景。直接读 `docs/batch<N>/02-scenarios.md`，里面的场景全部
+属于本批，不用再筛。其他批次的场景文件一律不碰。
 
 产物落到 `docs/batch<N>/04-framework-data.md`，状态头的阶段写成 `batch<N>/04-框架数据`。
 

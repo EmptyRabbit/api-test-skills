@@ -88,10 +88,10 @@ def test_win_to_wsl_path_fallback(monkeypatch):
 
 
 def test_launch_argv_prefers_wsl_when_windows_shim_broken(monkeypatch, tmp_path):
-    monkeypatch.setattr(vscode, "detect_wsl_code_server", lambda: "/home/u/.local/code-server/bin/code-server")
-    monkeypatch.setattr(vscode, "resolve_code_server_bin", lambda _n: str(tmp_path / "code-server.cmd"))
-    monkeypatch.setattr(vscode, "broken_windows_npm_shim", lambda _p: True)
-    monkeypatch.setattr(vscode, "win_to_wsl_path", lambda p: "/mnt/d/ws")
+    monkeypatch.setattr(vscode.process, "detect_wsl_code_server", lambda: "/home/u/.local/code-server/bin/code-server")
+    monkeypatch.setattr(vscode.process, "resolve_code_server_bin", lambda _n: str(tmp_path / "code-server.cmd"))
+    monkeypatch.setattr(vscode.process, "broken_windows_npm_shim", lambda _p: True)
+    monkeypatch.setattr(vscode.wsl, "win_to_wsl_path", lambda p: "/mnt/d/ws")
     monkeypatch.setattr(vscode.os, "name", "nt")
     argv = vscode.launch_argv("code-server", [], ["--auth", "none"], 9876, tmp_path)
     assert argv[0] == "wsl.exe"
@@ -113,6 +113,27 @@ def test_resolve_bin_missing():
 def test_wsl_detect_script_includes_official_standalone_bin():
     assert '"$HOME/.local/bin/code-server"' in vscode._WSL_DETECT
     assert '"$HOME/.local/code-server/bin/code-server"' in vscode._WSL_DETECT
+
+
+def test_wsl_bash_resets_home_from_passwd(monkeypatch):
+    captured = {}
+
+    def fake_run(argv, **_k):
+        captured["argv"] = argv
+
+        class R:
+            returncode = 0
+            stdout = "/home/u/.local/bin/code-server\n"
+
+        return R()
+
+    monkeypatch.setattr(vscode.subprocess, "run", fake_run)
+    assert vscode._wsl_bash_first_match(vscode._WSL_DETECT) == "/home/u/.local/bin/code-server"
+    argv = captured["argv"]
+    assert argv[:5] == ["wsl.exe", "--exec", "/bin/bash", "--noprofile", "--norc"]
+    script = argv[-1]
+    assert "getent passwd" in script
+    assert '"$HOME/.local/bin/code-server"' in script
 
 
 def test_resolve_bin_falls_back_to_home_local(tmp_path, monkeypatch):
@@ -293,7 +314,7 @@ def test_write_minimal_user_settings_forces_dark_theme(tmp_path):
 
 
 def test_wslify_args_converts_user_and_ext_dirs(monkeypatch, tmp_path):
-    monkeypatch.setattr(vscode, "win_to_wsl_path", lambda p: "/mnt/d/" + Path(p).name)
+    monkeypatch.setattr(vscode.wsl, "win_to_wsl_path", lambda p: "/mnt/d/" + Path(p).name)
     args = ["--auth", "none", "--user-data-dir", str(tmp_path / "ud"), "--extensions-dir", str(tmp_path / "ex")]
     out = vscode.wslify_args(args)
     assert out[out.index("--user-data-dir") + 1] == "/mnt/d/ud"
@@ -358,8 +379,8 @@ def test_debug_interpreter_uses_wsl_path(monkeypatch, tmp_path):
     exe = tmp_path / "python.exe"
     exe.write_text("")
     monkeypatch.setattr(vscode.sys, "executable", str(exe))
-    monkeypatch.setattr(vscode, "win_to_wsl_path", lambda p: "/mnt/d/py")
-    monkeypatch.setattr(vscode, "detect_wsl_pytest_python", lambda: None)
+    monkeypatch.setattr(vscode.wsl, "win_to_wsl_path", lambda p: "/mnt/d/py")
+    monkeypatch.setattr(vscode.wsl, "detect_wsl_pytest_python", lambda: None)
     assert vscode.debug_interpreter(via_wsl=True) == "/mnt/d/py"
 
 
@@ -367,7 +388,7 @@ def test_debug_interpreter_prefers_wsl_pytest_venv(monkeypatch, tmp_path):
     exe = tmp_path / "python.exe"
     exe.write_text("")
     monkeypatch.setattr(vscode.sys, "executable", str(exe))
-    monkeypatch.setattr(vscode, "detect_wsl_pytest_python", lambda: "/home/u/.venvs/api-test-artifacts/bin/python3")
+    monkeypatch.setattr(vscode.wsl, "detect_wsl_pytest_python", lambda: "/home/u/.venvs/api-test-artifacts/bin/python3")
     assert vscode.debug_interpreter(via_wsl=True) == "/home/u/.venvs/api-test-artifacts/bin/python3"
 
 
