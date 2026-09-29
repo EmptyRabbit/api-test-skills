@@ -1,0 +1,39 @@
+skills/api-analyze-change-scenarios/SKILL.md
+  s_3a482eb8f40c44::t_e98bd0890d1b00 3
+  s_3a482eb8f40c44::t_29498393098803 16-49
+  s_3a482eb8f40c44::t_8919340606f0d9 75-76
+  s_3a482eb8f40c44::t_58d7ad5e5abf30 108
+  s_3a482eb8f40c44::t_3a946e6dc9df21 97
+  s_3a482eb8f40c44::t_875d10d0b09ad5 190
+  s_3a482eb8f40c44::t_d72bbe52a37da7 204
+skills/api-generate-api-tests/CONVENTIONS.md
+  s_3a482eb8f40c44::t_19fba18d4068ea 99-100
+  s_3a482eb8f40c44::t_0f1fbfdaff4214 71-72
+  s_3a482eb8f40c44::t_187b6ce0592531 92-94
+skills/api-generate-api-tests/SKILL.md
+  s_3a482eb8f40c44::t_03d5829fddbf4a 92-98
+  s_3a482eb8f40c44::t_86a2649c92cf41 120
+  s_3a482eb8f40c44::t_87b365ca3b742e 3
+  s_3a482eb8f40c44::t_7317ab6fb235fe 176-179
+  s_3a482eb8f40c44::t_0bbf9b6f98570d 199-200
+  s_3a482eb8f40c44::t_e0bc407191e30c 210
+  s_3a482eb8f40c44::t_0ac09329a26fd9 154
+skills/api-analyze-change-scenarios/TEMPLATES.md
+  s_3a482eb8f40c44::t_2575a0c4d28bbc 152-176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.45-trip",
+  "base_commit_sha": "ced72e609bcabdbcda927a3f5907213d04bae066",
+  "prompts": {},
+  "sessions": {
+    "s_3a482eb8f40c44": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5bc6daca-25f3-490b-bd54-4e55c37eeea9",
+        "model": "grok-4.7"
+      },
+      "human_author": "EmptyRabbit <qiuzhouxin@163.com>"
+    }
+  }
+}
