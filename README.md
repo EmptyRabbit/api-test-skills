@@ -61,6 +61,8 @@ npx skills add https://github.com/EmptyRabbit/api-test-skills.git -g -y --agent 
 
 独立仓 `api-test-skills-<vendor>`，装到 `skills/` 后 `npx api-test-skills use <vendor>`。按需覆盖 `api-prepare-mock-data` / `api-prepare-framework-data` / `api-write-pytest-cases` 的 `-<vendor>` 版。命名必须是 `<核心 skill>-<vendor>`；只补工具细节；专有名词只出现在适配 skill。
 
+`04-framework-data.md` 只写造数动作（目标、操作、数据、清理、执行方），不写 pytest。框架数据适配只补查询工具和平台事实；`db_client` / `redis_client` / `MqClient` 的调用示例写在 `api-write-pytest-cases` 适配里。
+
 下列签名须两仓一致，改时同步并跑 `tests/test_mq_client_core.py` 与适配仓 conformance 测试。
 overlay 整文件替换客户端时，公开方法需保留 `@request_log.logged`，才能写入同一份用例操作日志：
 

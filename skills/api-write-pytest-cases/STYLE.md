@@ -233,6 +233,51 @@ def test_cid_empty(http_client):
     assert "cid" in jp(resp, "$.errorMessage")
 ```
 
+## 造数动作渲染成 fixture
+
+`04-framework-data.md` 的造数动作表是输入。执行方为「自动」的动作写进 `conftest.py`；
+执行方为「人工」的不生成代码。一个场景的一组动作合成一个 fixture，动态数据在 `yield` 之后按清理列删除，
+环境里本来就有的数据不动。
+
+DB，参数是 `config.yaml` 里 `databases` 下的库名：
+
+```python
+@pytest.fixture
+def paid_order(db_client):
+    db = db_client("order_db")
+    order_id = "demo_test_10001"
+    db.execute(
+        "INSERT INTO orders (order_id, status, amount) VALUES (%s, %s, %s)",
+        (order_id, "PAID", 100),
+    )
+    yield order_id
+    db.execute("DELETE FROM orders WHERE order_id = %s", (order_id,))
+```
+
+Redis，参数是 `config.yaml` 里 `redis` 段的集群名。支持 `get` `set` `hset` `hmset` `hget`
+`hgetall` `zadd` `zrange` `zrangebyscore` `expire` `delete`：
+
+```python
+@pytest.fixture
+def user_cache(redis_client):
+    cache = redis_client("main_cache")
+    key = "user:10001:profile"
+    cache.set(key, {"level": "VIP"}, ex=300)
+    yield key
+    cache.delete(key)
+```
+
+只清缓存、没有要 yield 的值时，fixture 不 yield 业务标识，删完 key 即可。
+
+消息发送和拉取用 `frame/mq_client.py`（vendor 适配会换成具体实现）：
+
+```python
+MqClient.send(topic="order.paid", data={"orderId": order_id})
+
+msgs = MqClient.pull(subject="order.paid", group="test-consumer-group", timeout=5000, batch=10)
+assert any(m["orderId"] == order_id for m in msgs)
+```
+
 ## 带造数 fixture 的用例
 
 fixture 写在 `conftest.py`，用例直接声明依赖；docstring 里步骤要提到 fixture 造了什么数据：

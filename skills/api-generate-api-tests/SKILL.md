@@ -61,7 +61,7 @@ vendor 为 `none` 时纯核心运行；阶段 3（mock）若无核心方法论�
 | 1 | 本 skill 收集输入 | — | `docs/00-context.md` | 全量 |
 | 2 | `api-analyze-change-scenarios` | — | `docs/01-change-analysis.md`、`docs/batch<N>/02-scenarios.md` | 01 骨架全量一次、行为差异按批追加；场景每批一份 |
 | 3 | `api-prepare-mock-data` | `api-prepare-mock-data-<vendor>` | `docs/batch<N>/03-mock-plan.md` | 按批 |
-| 4 | `api-prepare-framework-data` | `api-prepare-framework-data-<vendor>` | `docs/batch<N>/04-framework-data.md` | 按批 |
+| 4 | `api-prepare-framework-data` | `api-prepare-framework-data-<vendor>` | `docs/batch<N>/04-framework-data.md`（造数动作表） | 按批 |
 | 5 | `api-write-pytest-cases` | `api-write-pytest-cases-<vendor>` | 用例代码、`docs/batch<N>/05-case-design.md` | 按批 |
 | 6 | `api-run-and-fix-tests` | — | `docs/batch<N>/06-run-report.md` | 按批 |
 

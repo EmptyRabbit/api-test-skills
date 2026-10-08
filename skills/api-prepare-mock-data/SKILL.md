@@ -1,12 +1,15 @@
 ---
 name: api-prepare-mock-data
-description: 为接口测试场景设计外部依赖接口的 mock 方案，逐个与用户确认哪些接口该走 mock，生成可直接配置的 mock 报文。当用户要造 mock 数据、设计挡板报文、或需要确定依赖接口是否 mock 时使用。
+description: 当测试场景依赖外部接口返回，需要逐个确认是否 mock 并写出可配置报文时使用。接口用例和端到端用例都使用。
 ---
 
 # Mock 数据准备
 
 读 `01-change-analysis.md` 的外部接口依赖和当前批次的 `02-scenarios.md`，产出 `03-mock-plan.md`。
 产物结构见 [TEMPLATE.md](TEMPLATE.md)，红线见 `../api-generate-api-tests/CONVENTIONS.md`。
+
+这份 md 与测试框架无关：决策、报文、回填 ID、遗留数据需求给下游照用。
+请求头怎么注入由消费方写。接口测试见 `api-write-pytest-cases`；端到端步骤让页面请求带上同一个头。
 
 ## 批次范围
 
