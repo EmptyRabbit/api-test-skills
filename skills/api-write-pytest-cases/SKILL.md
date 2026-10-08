@@ -53,7 +53,7 @@ appid / Pod IP。用不到的配置项删掉，不要留一堆模板占位。
   Redis 函数+参数、MQ 收发），格式与写法见 STYLE.md 的「用例注释」；
 - **所有响应断言统一走 jsonpath**，禁止链式取值，规则和工具函数见下方「断言纪律」
   及 STYLE.md 的「断言：统一走 jsonpath」；
-- 需要造数的场景通过 `conftest.py` 的 fixture 拿数据，fixture 在 `yield` 后清理动态数据；
+- `04-framework-data.md` 里没有 pytest 代码。执行方为「自动」的动作在 `conftest.py` 写成 fixture：setup、`yield` 交出造出的标识、`yield` 之后按清理列删除；执行方为「人工」的只抄进执行前置清单。写法见 STYLE.md「造数动作渲染成 fixture」；
 - 仅入参不同的同构场景用 `parametrize` 合并，参数里带场景 ID；
 - 业务型 helper（`_invoke`、`_assert_xxx`）只在同文件内两个以上场景复用时才抽，
   **不要跨文件共享**；纯工具型 helper（jsonpath 系列）走 `frame.jsonpath_utils`；
