@@ -131,6 +131,7 @@
       width: 100%; border: 0; resize: none; min-height: 72px; max-height: 180px;
       padding: 6px 4px; background: transparent; line-height: 1.5;
     }
+    .home .composer textarea { min-height: 96px; }
     .composer-foot {
       display: flex; align-items: center; gap: 8px; padding-top: 8px;
     }
@@ -256,7 +257,7 @@
     const TREE = ["docs/scenarios.md", "tests/test_order_create.py", "conftest.py"];
 
     const blankRepos = () => ([
-      { url: "", base: "master", feat: "" },
+      { url: "", base: "", feat: "" },
     ]);
 
     const state = {
@@ -308,9 +309,9 @@
       const list = state[listKey];
       const rows = list.map((r, i) => `
         <div class="repo-row">
-          <input data-repo="${listKey}" data-i="${i}" data-k="url" placeholder="GitLab 仓库 git 地址" value="${esc(r.url)}" />
-          <input data-repo="${listKey}" data-i="${i}" data-k="base" placeholder="base" value="${esc(r.base)}" />
-          <input data-repo="${listKey}" data-i="${i}" data-k="feat" placeholder="对比分支 feature/…" value="${esc(r.feat)}" />
+          <input data-repo="${listKey}" data-i="${i}" data-k="url" placeholder="GitLab 仓库 git 地址，示例：http://gitlab.example.com/group/project.git" value="${esc(r.url)}" />
+          <input data-repo="${listKey}" data-i="${i}" data-k="base" placeholder="主分支" value="${esc(r.base)}" />
+          <input data-repo="${listKey}" data-i="${i}" data-k="feat" placeholder="对比分支" value="${esc(r.feat)}" />
           <button class="iconx" data-act="rm-repo" data-key="${listKey}" data-i="${i}" ${list.length === 1 ? "disabled" : ""} title="移除">×</button>
         </div>`).join("");
       return `<div class="repos">
@@ -387,6 +388,12 @@
         </div>`;
     }
 
+    const HOME_DRAFT_PLACEHOLDER = [
+      "描述要测的改动，例如：",
+      "接口名称：api/test",
+      "接口请求地址：http://example.com/api/test",
+    ].join("\n");
+
     function composerBox(opts) {
       const { home } = opts;
       const busy = state.busy;
@@ -394,7 +401,7 @@
         ? `<button class="btn danger" data-act="stop">停止</button>`
         : `<button class="btn" data-act="${home ? "start" : "send"}" ${state.draft.trim() ? "" : "disabled"}>${home ? "开始" : "发送"}</button>`;
       return `<div class="composer">
-        <textarea id="draft" placeholder="${home ? "描述要测的改动，例如：分析这两个仓 feature 分支对创单的影响，并设计接口场景" : (busy ? "agent 运行中…" : "继续下发任务，Enter 发送")}">${esc(state.draft)}</textarea>
+        <textarea id="draft" placeholder="${home ? HOME_DRAFT_PLACEHOLDER : (busy ? "agent 运行中…" : "继续下发任务，Enter 发送")}">${esc(state.draft)}</textarea>
         <div class="composer-foot">
           ${home ? "" : `<button class="btn ghost tiny" data-act="toggle-files">${state.filesOpen ? "收起产物" : "产物"}</button>`}
           <span class="hint">Enter 发送 · Shift+Enter 换行</span>
@@ -568,7 +575,7 @@
           ];
         }
       }
-      if (act === "add-repo") state[t.dataset.key].push({ url: "", base: "master", feat: "" });
+      if (act === "add-repo") state[t.dataset.key].push({ url: "", base: "", feat: "" });
       if (act === "rm-repo") {
         const key = t.dataset.key;
         if (state[key].length > 1) state[key].splice(Number(t.dataset.i), 1);

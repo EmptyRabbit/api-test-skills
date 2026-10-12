@@ -60,10 +60,10 @@ describe('HomePanel model picker', () => {
     await waitFor(() => expect(select).toHaveValue('glm-5.3'));
     fireEvent.change(select, { target: { value: 'other' } });
     fireEvent.change(screen.getByLabelText('Auth Token'), { target: { value: 'from-ui' } });
-    fireEvent.change(screen.getByPlaceholderText('GitLab 仓库 git 地址'), {
+    fireEvent.change(screen.getByPlaceholderText('GitLab 仓库 git 地址，示例：http://gitlab.example.com/group/project.git'), {
       target: { value: 'http://example.invalid/x.git' },
     });
-    fireEvent.change(screen.getByPlaceholderText('对比分支 feature/…'), {
+    fireEvent.change(screen.getByPlaceholderText('对比分支'), {
       target: { value: 'feat/x' },
     });
     fireEvent.change(screen.getByPlaceholderText(/描述要测的改动/), { target: { value: '测一下' } });
@@ -74,10 +74,10 @@ describe('HomePanel model picker', () => {
   it('requires username on start when yaml did not provide one', async () => {
     useSessionStore.setState({ userName: '' } as never);
     render(<HomePanel />);
-    fireEvent.change(screen.getByPlaceholderText('GitLab 仓库 git 地址'), {
+    fireEvent.change(screen.getByPlaceholderText('GitLab 仓库 git 地址，示例：http://gitlab.example.com/group/project.git'), {
       target: { value: 'http://example.invalid/x.git' },
     });
-    fireEvent.change(screen.getByPlaceholderText('对比分支 feature/…'), {
+    fireEvent.change(screen.getByPlaceholderText('对比分支'), {
       target: { value: 'feat/x' },
     });
     fireEvent.change(screen.getByPlaceholderText(/先在右上角填写用户名/), {
