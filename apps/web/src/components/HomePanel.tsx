@@ -4,7 +4,12 @@ import { composePrompt, type RepoRow } from '../orchestrator';
 import { useChatStore } from '../stores/chat';
 import { useSessionStore } from '../stores/session';
 
-const EMPTY_REPO: RepoRow = { url: '', base: 'master', feat: '' };
+const EMPTY_REPO: RepoRow = { url: '', base: '', feat: '' };
+const DRAFT_PLACEHOLDER = [
+  '描述要测的改动，例如：',
+  '接口名称：api/test',
+  '接口请求地址：http://example.com/api/test',
+].join('\n');
 const MODEL_KEY = 'platform_model';
 const TOKEN_KEY = 'platform_auth_token';
 
@@ -137,17 +142,17 @@ export default function HomePanel() {
           {repos.map((r, i) => (
             <div className="repo-row" key={i}>
               <input
-                placeholder="GitLab 仓库 git 地址"
+                placeholder="GitLab 仓库 git 地址，示例：http://gitlab.example.com/group/project.git"
                 value={r.url}
                 onChange={(e) => patchRepo(i, { url: e.target.value })}
               />
               <input
-                placeholder="base"
+                placeholder="主分支"
                 value={r.base}
                 onChange={(e) => patchRepo(i, { base: e.target.value })}
               />
               <input
-                placeholder="对比分支 feature/…"
+                placeholder="对比分支"
                 value={r.feat}
                 onChange={(e) => patchRepo(i, { feat: e.target.value })}
               />
@@ -166,11 +171,7 @@ export default function HomePanel() {
           <div className="composer">
             <textarea
               value={draft}
-              placeholder={
-                resolvedUserName()
-                  ? '描述要测的改动，例如：分析这两个仓 feature 分支对创单的影响（将走 api-generate-api-tests）'
-                  : '先在右上角填写用户名'
-              }
+              placeholder={resolvedUserName() ? DRAFT_PLACEHOLDER : '先在右上角填写用户名'}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
